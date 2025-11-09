@@ -1,8 +1,8 @@
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
-import { createSupabaseAdminClient } from "@/lib/supabaseServer";
 import type { Database } from "@/lib/supabase-types";
+import { createSupabaseAdminClient } from "@/lib/supabaseServer";
 
 // Ensure environment variables are set
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
@@ -61,8 +61,7 @@ async function updateOrderStatus(
       updated_at: new Date().toISOString(),
     };
 
-    const { error } = await (supabase
-      .from("orders") as any)
+    const { error } = await (supabase.from("orders") as any)
       .update(updateData)
       .eq("id", orderId);
 
@@ -114,7 +113,11 @@ export async function POST(req: Request) {
 
   try {
     // At this point, TypeScript knows signature is not null due to the check above
-    event = (stripe as any).webhooks.constructEvent(body, signature, webhookSecret);
+    event = (stripe as any).webhooks.constructEvent(
+      body,
+      signature,
+      webhookSecret,
+    );
     logWebhookEvent("info", "Webhook signature verified", {
       requestId,
       eventId: event.id,
@@ -130,7 +133,11 @@ export async function POST(req: Request) {
   }
 
   // Check if we support this event type
-  if (!SUPPORTED_EVENT_TYPES.includes(event.type as typeof SUPPORTED_EVENT_TYPES[number])) {
+  if (
+    !SUPPORTED_EVENT_TYPES.includes(
+      event.type as (typeof SUPPORTED_EVENT_TYPES)[number],
+    )
+  ) {
     logWebhookEvent("info", "Unsupported event type received", {
       requestId,
       eventType: event.type,

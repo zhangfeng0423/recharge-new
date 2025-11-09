@@ -1,7 +1,7 @@
+import { CheckCircle } from "lucide-react";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import Link from "next/link";
-import { CheckCircle } from "lucide-react";
 
 interface PaymentSuccessPageProps {
   params: Promise<{

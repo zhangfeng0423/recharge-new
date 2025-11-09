@@ -5,17 +5,17 @@
  * 包括签名验证、幂等性、防重放攻击等
  */
 
-import { describe, test, expect, beforeEach, vi } from 'vitest';
-import { POST } from '../src/app/api/webhooks/stripe/route';
-import { NextRequest } from 'next/server';
+import { NextRequest } from "next/server";
+import { beforeEach, describe, expect, test, vi } from "vitest";
+import { POST } from "../src/app/api/webhooks/stripe/route";
 
 // Mock dependencies
-vi.mock('../src/lib/supabaseServer', () => ({
+vi.mock("../src/lib/supabaseServer", () => ({
   createSupabaseAdminClient: vi.fn(),
 }));
 
 // Mock Stripe
-vi.mock('stripe', () => {
+vi.mock("stripe", () => {
   return {
     default: class MockStripe {
       constructor() {
@@ -31,11 +31,11 @@ vi.mock('stripe', () => {
 });
 
 // Mock headers
-vi.mock('next/headers', () => ({
+vi.mock("next/headers", () => ({
   headers: vi.fn(),
 }));
 
-describe('Webhook Security Tests', () => {
+describe("Webhook Security Tests", () => {
   const originalEnv = process.env;
 
   beforeEach(() => {
@@ -43,104 +43,118 @@ describe('Webhook Security Tests', () => {
     process.env = { ...originalEnv };
 
     // Set required environment variables
-    process.env.STRIPE_SECRET_KEY = 'sk_test_test';
-    process.env.STRIPE_WEBHOOK_SECRET = 'whsec_test';
+    process.env.STRIPE_SECRET_KEY = "sk_test_test";
+    process.env.STRIPE_WEBHOOK_SECRET = "whsec_test";
   });
 
-  describe('Signature Verification', () => {
-    test('should reject requests without Stripe signature', async () => {
-      const { headers } = await import('next/headers');
+  describe("Signature Verification", () => {
+    test("should reject requests without Stripe signature", async () => {
+      const { headers } = await import("next/headers");
       vi.mocked(headers).mockResolvedValue(
         new Map([
-          ['content-type', 'application/json'],
-          ['stripe-signature', ''],
-        ])
+          ["content-type", "application/json"],
+          ["stripe-signature", ""],
+        ]),
       );
 
-      const request = new NextRequest('http://localhost:3000/api/webhooks/stripe', {
-        method: 'POST',
-        body: JSON.stringify({ test: 'data' }),
-      });
-
-      const response = await POST(request);
-
-      expect(response.status).toBe(400);
-      const text = await response.text();
-      expect(text).toContain('Missing Stripe signature');
-    });
-
-    test('should reject requests with invalid signatures', async () => {
-      const { headers } = await import('next/headers');
-      vi.mocked(headers).mockResolvedValue(
-        new Map([
-          ['content-type', 'application/json'],
-          ['stripe-signature', 'invalid_signature'],
-        ])
-      );
-
-      const { default: Stripe } = await import('stripe');
-      const mockStripe = vi.mocked(Stripe);
-      mockStripe.mockImplementation(() => ({
-        webhooks: {
-          constructEvent: vi.fn().mockImplementation(() => {
-            throw new Error('Invalid signature');
-          }),
+      const request = new NextRequest(
+        "http://localhost:3000/api/webhooks/stripe",
+        {
+          method: "POST",
+          body: JSON.stringify({ test: "data" }),
         },
-      } as any));
-
-      const request = new NextRequest('http://localhost:3000/api/webhooks/stripe', {
-        method: 'POST',
-        body: JSON.stringify({ test: 'data' }),
-      });
+      );
 
       const response = await POST(request);
 
       expect(response.status).toBe(400);
       const text = await response.text();
-      expect(text).toContain('Invalid signature');
+      expect(text).toContain("Missing Stripe signature");
     });
 
-    test('should accept requests with valid signatures', async () => {
-      const { headers } = await import('next/headers');
+    test("should reject requests with invalid signatures", async () => {
+      const { headers } = await import("next/headers");
       vi.mocked(headers).mockResolvedValue(
         new Map([
-          ['content-type', 'application/json'],
-          ['stripe-signature', 'valid_signature'],
-        ])
+          ["content-type", "application/json"],
+          ["stripe-signature", "invalid_signature"],
+        ]),
       );
 
-      const { default: Stripe } = await import('stripe');
+      const { default: Stripe } = await import("stripe");
       const mockStripe = vi.mocked(Stripe);
-      mockStripe.mockImplementation(() => ({
-        webhooks: {
-          constructEvent: vi.fn().mockReturnValue({
-            id: 'evt_test123',
-            type: 'checkout.session.completed',
-            data: {
-              object: {
-                id: 'cs_test123',
-                client_reference_id: 'order_123',
-                payment_status: 'paid',
-                amount_total: 1099,
-                currency: 'usd',
-              },
+      mockStripe.mockImplementation(
+        () =>
+          ({
+            webhooks: {
+              constructEvent: vi.fn().mockImplementation(() => {
+                throw new Error("Invalid signature");
+              }),
             },
-          }),
+          }) as any,
+      );
+
+      const request = new NextRequest(
+        "http://localhost:3000/api/webhooks/stripe",
+        {
+          method: "POST",
+          body: JSON.stringify({ test: "data" }),
         },
-      } as any));
+      );
+
+      const response = await POST(request);
+
+      expect(response.status).toBe(400);
+      const text = await response.text();
+      expect(text).toContain("Invalid signature");
+    });
+
+    test("should accept requests with valid signatures", async () => {
+      const { headers } = await import("next/headers");
+      vi.mocked(headers).mockResolvedValue(
+        new Map([
+          ["content-type", "application/json"],
+          ["stripe-signature", "valid_signature"],
+        ]),
+      );
+
+      const { default: Stripe } = await import("stripe");
+      const mockStripe = vi.mocked(Stripe);
+      mockStripe.mockImplementation(
+        () =>
+          ({
+            webhooks: {
+              constructEvent: vi.fn().mockReturnValue({
+                id: "evt_test123",
+                type: "checkout.session.completed",
+                data: {
+                  object: {
+                    id: "cs_test123",
+                    client_reference_id: "order_123",
+                    payment_status: "paid",
+                    amount_total: 1099,
+                    currency: "usd",
+                  },
+                },
+              }),
+            },
+          }) as any,
+      );
 
       // Mock successful order fetch and update
-      const { createSupabaseAdminClient } = await import('../src/lib/supabaseServer');
+      const { createSupabaseAdminClient } = await import(
+        "../src/lib/supabaseServer"
+      );
       const mockSupabase = {
         from: vi.fn().mockReturnThis(),
         select: vi.fn().mockReturnThis(),
         eq: vi.fn().mockReturnThis(),
         single: vi.fn().mockResolvedValueOnce({
           data: {
-            id: 'order_123',
-            status: 'pending',
+            id: "order_123",
+            status: "pending",
             amount: 1099,
-            currency: 'usd',
+            currency: "usd",
           },
           error: null,
         }),
@@ -150,10 +164,13 @@ describe('Webhook Security Tests', () => {
 
       vi.mocked(createSupabaseAdminClient).mockReturnValue(mockSupabase as any);
 
-      const request = new NextRequest('http://localhost:3000/api/webhooks/stripe', {
-        method: 'POST',
-        body: JSON.stringify({ test: 'data' }),
-      });
+      const request = new NextRequest(
+        "http://localhost:3000/api/webhooks/stripe",
+        {
+          method: "POST",
+          body: JSON.stringify({ test: "data" }),
+        },
+      );
 
       const response = await POST(request);
 
@@ -161,49 +178,54 @@ describe('Webhook Security Tests', () => {
     });
   });
 
-  describe('Idempotency Protection', () => {
-    test('should handle duplicate events gracefully', async () => {
+  describe("Idempotency Protection", () => {
+    test("should handle duplicate events gracefully", async () => {
       // Mock valid signature and event
-      const { headers } = await import('next/headers');
+      const { headers } = await import("next/headers");
       vi.mocked(headers).mockResolvedValue(
         new Map([
-          ['content-type', 'application/json'],
-          ['stripe-signature', 'valid_signature'],
-        ])
+          ["content-type", "application/json"],
+          ["stripe-signature", "valid_signature"],
+        ]),
       );
 
-      const { default: Stripe } = await import('stripe');
+      const { default: Stripe } = await import("stripe");
       const mockStripe = vi.mocked(Stripe);
-      mockStripe.mockImplementation(() => ({
-        webhooks: {
-          constructEvent: vi.fn().mockReturnValue({
-            id: 'evt_duplicate_event', // Same event ID
-            type: 'checkout.session.completed',
-            data: {
-              object: {
-                id: 'cs_test123',
-                client_reference_id: 'order_123',
-                payment_status: 'paid',
-                amount_total: 1099,
-                currency: 'usd',
-              },
+      mockStripe.mockImplementation(
+        () =>
+          ({
+            webhooks: {
+              constructEvent: vi.fn().mockReturnValue({
+                id: "evt_duplicate_event", // Same event ID
+                type: "checkout.session.completed",
+                data: {
+                  object: {
+                    id: "cs_test123",
+                    client_reference_id: "order_123",
+                    payment_status: "paid",
+                    amount_total: 1099,
+                    currency: "usd",
+                  },
+                },
+              }),
             },
-          }),
-        },
-      } as any));
+          }) as any,
+      );
 
       // Mock order that's already completed
-      const { createSupabaseAdminClient } = await import('../src/lib/supabaseServer');
+      const { createSupabaseAdminClient } = await import(
+        "../src/lib/supabaseServer"
+      );
       const mockSupabase = {
         from: vi.fn().mockReturnThis(),
         select: vi.fn().mockReturnThis(),
         eq: vi.fn().mockReturnThis(),
         single: vi.fn().mockResolvedValue({
           data: {
-            id: 'order_123',
-            status: 'completed', // Already completed
+            id: "order_123",
+            status: "completed", // Already completed
             amount: 1099,
-            currency: 'usd',
+            currency: "usd",
           },
           error: null,
         }),
@@ -213,10 +235,13 @@ describe('Webhook Security Tests', () => {
 
       vi.mocked(createSupabaseAdminClient).mockReturnValue(mockSupabase as any);
 
-      const request = new NextRequest('http://localhost:3000/api/webhooks/stripe', {
-        method: 'POST',
-        body: JSON.stringify({ test: 'data' }),
-      });
+      const request = new NextRequest(
+        "http://localhost:3000/api/webhooks/stripe",
+        {
+          method: "POST",
+          body: JSON.stringify({ test: "data" }),
+        },
+      );
 
       const response = await POST(request);
 
@@ -226,47 +251,52 @@ describe('Webhook Security Tests', () => {
       expect(mockSupabase.update).not.toHaveBeenCalled();
     });
 
-    test('should prevent duplicate order completion', async () => {
+    test("should prevent duplicate order completion", async () => {
       // This tests the idempotency check in the webhook handler
-      const { headers } = await import('next/headers');
+      const { headers } = await import("next/headers");
       vi.mocked(headers).mockResolvedValue(
         new Map([
-          ['content-type', 'application/json'],
-          ['stripe-signature', 'valid_signature'],
-        ])
+          ["content-type", "application/json"],
+          ["stripe-signature", "valid_signature"],
+        ]),
       );
 
-      const { default: Stripe } = await import('stripe');
+      const { default: Stripe } = await import("stripe");
       const mockStripe = vi.mocked(Stripe);
-      mockStripe.mockImplementation(() => ({
-        webhooks: {
-          constructEvent: vi.fn().mockReturnValue({
-            id: 'evt_test123',
-            type: 'checkout.session.completed',
-            data: {
-              object: {
-                id: 'cs_test123',
-                client_reference_id: 'order_123',
-                payment_status: 'paid',
-                amount_total: 1099,
-                currency: 'usd',
-              },
+      mockStripe.mockImplementation(
+        () =>
+          ({
+            webhooks: {
+              constructEvent: vi.fn().mockReturnValue({
+                id: "evt_test123",
+                type: "checkout.session.completed",
+                data: {
+                  object: {
+                    id: "cs_test123",
+                    client_reference_id: "order_123",
+                    payment_status: "paid",
+                    amount_total: 1099,
+                    currency: "usd",
+                  },
+                },
+              }),
             },
-          }),
-        },
-      } as any));
+          }) as any,
+      );
 
-      const { createSupabaseAdminClient } = await import('../src/lib/supabaseServer');
+      const { createSupabaseAdminClient } = await import(
+        "../src/lib/supabaseServer"
+      );
       const mockSupabase = {
         from: vi.fn().mockReturnThis(),
         select: vi.fn().mockReturnThis(),
         eq: vi.fn().mockReturnThis(),
         single: vi.fn().mockResolvedValue({
           data: {
-            id: 'order_123',
-            status: 'completed', // Already completed
+            id: "order_123",
+            status: "completed", // Already completed
             amount: 1099,
-            currency: 'usd',
+            currency: "usd",
           },
           error: null,
         }),
@@ -274,10 +304,13 @@ describe('Webhook Security Tests', () => {
 
       vi.mocked(createSupabaseAdminClient).mockReturnValue(mockSupabase as any);
 
-      const request = new NextRequest('http://localhost:3000/api/webhooks/stripe', {
-        method: 'POST',
-        body: JSON.stringify({ test: 'data' }),
-      });
+      const request = new NextRequest(
+        "http://localhost:3000/api/webhooks/stripe",
+        {
+          method: "POST",
+          body: JSON.stringify({ test: "data" }),
+        },
+      );
 
       const response = await POST(request);
 
@@ -286,101 +319,114 @@ describe('Webhook Security Tests', () => {
     });
   });
 
-  describe('Data Validation & Integrity', () => {
-    test('should verify order exists before processing', async () => {
-      const { headers } = await import('next/headers');
+  describe("Data Validation & Integrity", () => {
+    test("should verify order exists before processing", async () => {
+      const { headers } = await import("next/headers");
       vi.mocked(headers).mockResolvedValue(
         new Map([
-          ['content-type', 'application/json'],
-          ['stripe-signature', 'valid_signature'],
-        ])
+          ["content-type", "application/json"],
+          ["stripe-signature", "valid_signature"],
+        ]),
       );
 
-      const { default: Stripe } = await import('stripe');
+      const { default: Stripe } = await import("stripe");
       const mockStripe = vi.mocked(Stripe);
-      mockStripe.mockImplementation(() => ({
-        webhooks: {
-          constructEvent: vi.fn().mockReturnValue({
-            id: 'evt_test123',
-            type: 'checkout.session.completed',
-            data: {
-              object: {
-                id: 'cs_test123',
-                client_reference_id: 'nonexistent_order',
-                payment_status: 'paid',
-                amount_total: 1099,
-                currency: 'usd',
-              },
+      mockStripe.mockImplementation(
+        () =>
+          ({
+            webhooks: {
+              constructEvent: vi.fn().mockReturnValue({
+                id: "evt_test123",
+                type: "checkout.session.completed",
+                data: {
+                  object: {
+                    id: "cs_test123",
+                    client_reference_id: "nonexistent_order",
+                    payment_status: "paid",
+                    amount_total: 1099,
+                    currency: "usd",
+                  },
+                },
+              }),
             },
-          }),
-        },
-      } as any));
+          }) as any,
+      );
 
-      const { createSupabaseAdminClient } = await import('../src/lib/supabaseServer');
+      const { createSupabaseAdminClient } = await import(
+        "../src/lib/supabaseServer"
+      );
       const mockSupabase = {
         from: vi.fn().mockReturnThis(),
         select: vi.fn().mockReturnThis(),
         eq: vi.fn().mockReturnThis(),
         single: vi.fn().mockResolvedValue({
           data: null, // Order not found
-          error: { message: 'No rows returned' },
+          error: { message: "No rows returned" },
         }),
       };
 
       vi.mocked(createSupabaseAdminClient).mockReturnValue(mockSupabase as any);
 
-      const request = new NextRequest('http://localhost:3000/api/webhooks/stripe', {
-        method: 'POST',
-        body: JSON.stringify({ test: 'data' }),
-      });
+      const request = new NextRequest(
+        "http://localhost:3000/api/webhooks/stripe",
+        {
+          method: "POST",
+          body: JSON.stringify({ test: "data" }),
+        },
+      );
 
       const response = await POST(request);
 
       expect(response.status).toBe(500);
       const text = await response.text();
-      expect(text).toContain('not found');
+      expect(text).toContain("not found");
     });
 
-    test('should verify amounts match between order and session', async () => {
-      const { headers } = await import('next/headers');
+    test("should verify amounts match between order and session", async () => {
+      const { headers } = await import("next/headers");
       vi.mocked(headers).mockResolvedValue(
         new Map([
-          ['content-type', 'application/json'],
-          ['stripe-signature', 'valid_signature'],
-        ])
+          ["content-type", "application/json"],
+          ["stripe-signature", "valid_signature"],
+        ]),
       );
 
-      const { default: Stripe } = await import('stripe');
+      const { default: Stripe } = await import("stripe");
       const mockStripe = vi.mocked(Stripe);
-      mockStripe.mockImplementation(() => ({
-        webhooks: {
-          constructEvent: vi.fn().mockReturnValue({
-            id: 'evt_test123',
-            type: 'checkout.session.completed',
-            data: {
-              object: {
-                id: 'cs_test123',
-                client_reference_id: 'order_123',
-                payment_status: 'paid',
-                amount_total: 2199, // Different from order amount
-                currency: 'usd',
-              },
+      mockStripe.mockImplementation(
+        () =>
+          ({
+            webhooks: {
+              constructEvent: vi.fn().mockReturnValue({
+                id: "evt_test123",
+                type: "checkout.session.completed",
+                data: {
+                  object: {
+                    id: "cs_test123",
+                    client_reference_id: "order_123",
+                    payment_status: "paid",
+                    amount_total: 2199, // Different from order amount
+                    currency: "usd",
+                  },
+                },
+              }),
             },
-          }),
-        },
-      } as any));
+          }) as any,
+      );
 
-      const { createSupabaseAdminClient } = await import('../src/lib/supabaseServer');
+      const { createSupabaseAdminClient } = await import(
+        "../src/lib/supabaseServer"
+      );
       const mockSupabase = {
         from: vi.fn().mockReturnThis(),
         select: vi.fn().mockReturnThis(),
         eq: vi.fn().mockReturnThis(),
         single: vi.fn().mockResolvedValue({
           data: {
-            id: 'order_123',
-            status: 'pending',
+            id: "order_123",
+            status: "pending",
             amount: 1099, // Different amount
-            currency: 'usd',
+            currency: "usd",
           },
           error: null,
         }),
@@ -388,58 +434,66 @@ describe('Webhook Security Tests', () => {
 
       vi.mocked(createSupabaseAdminClient).mockReturnValue(mockSupabase as any);
 
-      const request = new NextRequest('http://localhost:3000/api/webhooks/stripe', {
-        method: 'POST',
-        body: JSON.stringify({ test: 'data' }),
-      });
+      const request = new NextRequest(
+        "http://localhost:3000/api/webhooks/stripe",
+        {
+          method: "POST",
+          body: JSON.stringify({ test: "data" }),
+        },
+      );
 
       const response = await POST(request);
 
       expect(response.status).toBe(500);
       const text = await response.text();
-      expect(text).toContain('Amount mismatch');
+      expect(text).toContain("Amount mismatch");
     });
 
-    test('should verify currencies match', async () => {
-      const { headers } = await import('next/headers');
+    test("should verify currencies match", async () => {
+      const { headers } = await import("next/headers");
       vi.mocked(headers).mockResolvedValue(
         new Map([
-          ['content-type', 'application/json'],
-          ['stripe-signature', 'valid_signature'],
-        ])
+          ["content-type", "application/json"],
+          ["stripe-signature", "valid_signature"],
+        ]),
       );
 
-      const { default: Stripe } = await import('stripe');
+      const { default: Stripe } = await import("stripe");
       const mockStripe = vi.mocked(Stripe);
-      mockStripe.mockImplementation(() => ({
-        webhooks: {
-          constructEvent: vi.fn().mockReturnValue({
-            id: 'evt_test123',
-            type: 'checkout.session.completed',
-            data: {
-              object: {
-                id: 'cs_test123',
-                client_reference_id: 'order_123',
-                payment_status: 'paid',
-                amount_total: 1099,
-                currency: 'eur', // Different currency
-              },
+      mockStripe.mockImplementation(
+        () =>
+          ({
+            webhooks: {
+              constructEvent: vi.fn().mockReturnValue({
+                id: "evt_test123",
+                type: "checkout.session.completed",
+                data: {
+                  object: {
+                    id: "cs_test123",
+                    client_reference_id: "order_123",
+                    payment_status: "paid",
+                    amount_total: 1099,
+                    currency: "eur", // Different currency
+                  },
+                },
+              }),
             },
-          }),
-        },
-      } as any));
+          }) as any,
+      );
 
-      const { createSupabaseAdminClient } = await import('../src/lib/supabaseServer');
+      const { createSupabaseAdminClient } = await import(
+        "../src/lib/supabaseServer"
+      );
       const mockSupabase = {
         from: vi.fn().mockReturnThis(),
         select: vi.fn().mockReturnThis(),
         eq: vi.fn().mockReturnThis(),
         single: vi.fn().mockResolvedValue({
           data: {
-            id: 'order_123',
-            status: 'pending',
+            id: "order_123",
+            status: "pending",
             amount: 1099,
-            currency: 'usd', // Different currency
+            currency: "usd", // Different currency
           },
           error: null,
         }),
@@ -447,85 +501,99 @@ describe('Webhook Security Tests', () => {
 
       vi.mocked(createSupabaseAdminClient).mockReturnValue(mockSupabase as any);
 
-      const request = new NextRequest('http://localhost:3000/api/webhooks/stripe', {
-        method: 'POST',
-        body: JSON.stringify({ test: 'data' }),
-      });
+      const request = new NextRequest(
+        "http://localhost:3000/api/webhooks/stripe",
+        {
+          method: "POST",
+          body: JSON.stringify({ test: "data" }),
+        },
+      );
 
       const response = await POST(request);
 
       expect(response.status).toBe(500);
       const text = await response.text();
-      expect(text).toContain('Currency mismatch');
+      expect(text).toContain("Currency mismatch");
     });
   });
 
-  describe('Event Type Handling', () => {
-    test('should ignore unsupported event types', async () => {
-      const { headers } = await import('next/headers');
+  describe("Event Type Handling", () => {
+    test("should ignore unsupported event types", async () => {
+      const { headers } = await import("next/headers");
       vi.mocked(headers).mockResolvedValue(
         new Map([
-          ['content-type', 'application/json'],
-          ['stripe-signature', 'valid_signature'],
-        ])
+          ["content-type", "application/json"],
+          ["stripe-signature", "valid_signature"],
+        ]),
       );
 
-      const { default: Stripe } = await import('stripe');
+      const { default: Stripe } = await import("stripe");
       const mockStripe = vi.mocked(Stripe);
-      mockStripe.mockImplementation(() => ({
-        webhooks: {
-          constructEvent: vi.fn().mockReturnValue({
-            id: 'evt_test123',
-            type: 'unsupported.event.type', // Not in supported list
-            data: {
-              object: {
-                id: 'test_id',
-              },
+      mockStripe.mockImplementation(
+        () =>
+          ({
+            webhooks: {
+              constructEvent: vi.fn().mockReturnValue({
+                id: "evt_test123",
+                type: "unsupported.event.type", // Not in supported list
+                data: {
+                  object: {
+                    id: "test_id",
+                  },
+                },
+              }),
             },
-          }),
-        },
-      } as any));
+          }) as any,
+      );
 
-      const request = new NextRequest('http://localhost:3000/api/webhooks/stripe', {
-        method: 'POST',
-        body: JSON.stringify({ test: 'data' }),
-      });
+      const request = new NextRequest(
+        "http://localhost:3000/api/webhooks/stripe",
+        {
+          method: "POST",
+          body: JSON.stringify({ test: "data" }),
+        },
+      );
 
       const response = await POST(request);
 
       expect(response.status).toBe(200);
       const json = await response.json();
       expect(json.received).toBe(true);
-      expect(json.message).toContain('not supported');
+      expect(json.message).toContain("not supported");
     });
 
-    test('should handle session.expired events', async () => {
-      const { headers } = await import('next/headers');
+    test("should handle session.expired events", async () => {
+      const { headers } = await import("next/headers");
       vi.mocked(headers).mockResolvedValue(
         new Map([
-          ['content-type', 'application/json'],
-          ['stripe-signature', 'valid_signature'],
-        ])
+          ["content-type", "application/json"],
+          ["stripe-signature", "valid_signature"],
+        ]),
       );
 
-      const { default: Stripe } = await import('stripe');
+      const { default: Stripe } = await import("stripe");
       const mockStripe = vi.mocked(Stripe);
-      mockStripe.mockImplementation(() => ({
-        webhooks: {
-          constructEvent: vi.fn().mockReturnValue({
-            id: 'evt_test123',
-            type: 'checkout.session.expired',
-            data: {
-              object: {
-                id: 'cs_expired',
-                client_reference_id: 'order_123',
-              },
+      mockStripe.mockImplementation(
+        () =>
+          ({
+            webhooks: {
+              constructEvent: vi.fn().mockReturnValue({
+                id: "evt_test123",
+                type: "checkout.session.expired",
+                data: {
+                  object: {
+                    id: "cs_expired",
+                    client_reference_id: "order_123",
+                  },
+                },
+              }),
             },
-          }),
-        },
-      } as any));
+          }) as any,
+      );
 
-      const { createSupabaseAdminClient } = await import('../src/lib/supabaseServer');
+      const { createSupabaseAdminClient } = await import(
+        "../src/lib/supabaseServer"
+      );
       const mockSupabase = {
         from: vi.fn().mockReturnThis(),
         update: vi.fn().mockReturnThis(),
@@ -534,83 +602,94 @@ describe('Webhook Security Tests', () => {
 
       vi.mocked(createSupabaseAdminClient).mockReturnValue(mockSupabase as any);
 
-      const request = new NextRequest('http://localhost:3000/api/webhooks/stripe', {
-        method: 'POST',
-        body: JSON.stringify({ test: 'data' }),
-      });
+      const request = new NextRequest(
+        "http://localhost:3000/api/webhooks/stripe",
+        {
+          method: "POST",
+          body: JSON.stringify({ test: "data" }),
+        },
+      );
 
       const response = await POST(request);
 
       expect(response.status).toBe(200);
       expect(mockSupabase.update).toHaveBeenCalledWith({
-        status: 'failed',
+        status: "failed",
         updated_at: expect.any(String),
       });
     });
   });
 
-  describe('Error Handling', () => {
-    test('should handle database errors gracefully', async () => {
-      const { headers } = await import('next/headers');
+  describe("Error Handling", () => {
+    test("should handle database errors gracefully", async () => {
+      const { headers } = await import("next/headers");
       vi.mocked(headers).mockResolvedValue(
         new Map([
-          ['content-type', 'application/json'],
-          ['stripe-signature', 'valid_signature'],
-        ])
+          ["content-type", "application/json"],
+          ["stripe-signature", "valid_signature"],
+        ]),
       );
 
-      const { default: Stripe } = await import('stripe');
+      const { default: Stripe } = await import("stripe");
       const mockStripe = vi.mocked(Stripe);
-      mockStripe.mockImplementation(() => ({
-        webhooks: {
-          constructEvent: vi.fn().mockReturnValue({
-            id: 'evt_test123',
-            type: 'checkout.session.completed',
-            data: {
-              object: {
-                id: 'cs_test123',
-                client_reference_id: 'order_123',
-                payment_status: 'paid',
-                amount_total: 1099,
-                currency: 'usd',
-              },
+      mockStripe.mockImplementation(
+        () =>
+          ({
+            webhooks: {
+              constructEvent: vi.fn().mockReturnValue({
+                id: "evt_test123",
+                type: "checkout.session.completed",
+                data: {
+                  object: {
+                    id: "cs_test123",
+                    client_reference_id: "order_123",
+                    payment_status: "paid",
+                    amount_total: 1099,
+                    currency: "usd",
+                  },
+                },
+              }),
             },
-          }),
-        },
-      } as any));
+          }) as any,
+      );
 
-      const { createSupabaseAdminClient } = await import('../src/lib/supabaseServer');
+      const { createSupabaseAdminClient } = await import(
+        "../src/lib/supabaseServer"
+      );
       const mockSupabase = {
         from: vi.fn().mockReturnThis(),
         select: vi.fn().mockReturnThis(),
         eq: vi.fn().mockReturnThis(),
         single: vi.fn().mockResolvedValue({
           data: {
-            id: 'order_123',
-            status: 'pending',
+            id: "order_123",
+            status: "pending",
             amount: 1099,
-            currency: 'usd',
+            currency: "usd",
           },
           error: null,
         }),
         update: vi.fn().mockReturnThis(),
         eq: vi.fn().mockResolvedValue({
-          error: { message: 'Database connection failed' },
+          error: { message: "Database connection failed" },
         }),
       };
 
       vi.mocked(createSupabaseAdminClient).mockReturnValue(mockSupabase as any);
 
-      const request = new NextRequest('http://localhost:3000/api/webhooks/stripe', {
-        method: 'POST',
-        body: JSON.stringify({ test: 'data' }),
-      });
+      const request = new NextRequest(
+        "http://localhost:3000/api/webhooks/stripe",
+        {
+          method: "POST",
+          body: JSON.stringify({ test: "data" }),
+        },
+      );
 
       const response = await POST(request);
 
       expect(response.status).toBe(500);
       const text = await response.text();
-      expect(text).toContain('processing failed');
+      expect(text).toContain("processing failed");
     });
   });
 });

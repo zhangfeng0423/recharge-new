@@ -47,18 +47,18 @@ const options = {
   force: args.includes("--force"),
   dryRun: args.includes("--dry-run"),
   clean: args.includes("--clean"),
-  help: args.includes("--help") || args.includes("-h")
+  help: args.includes("--help") || args.includes("-h"),
 };
 
 // Color output helpers
 const colors = {
-  reset: '\x1b[0m',
-  red: '\x1b[31m',
-  green: '\x1b[32m',
-  yellow: '\x1b[33m',
-  blue: '\x1b[34m',
-  cyan: '\x1b[36m',
-  white: '\x1b[37m'
+  reset: "\x1b[0m",
+  red: "\x1b[31m",
+  green: "\x1b[32m",
+  yellow: "\x1b[33m",
+  blue: "\x1b[34m",
+  cyan: "\x1b[36m",
+  white: "\x1b[37m",
 };
 
 function log(message, color = colors.white) {
@@ -97,9 +97,7 @@ async function backupData() {
     logInfo(`Backing up ${table}...`);
 
     try {
-      const { data, error } = await supabase
-        .from(table)
-        .select("*");
+      const { data, error } = await supabase.from(table).select("*");
 
       if (error) {
         logError(`Failed to backup ${table}: ${error.message}`);
@@ -176,8 +174,8 @@ async function executeSQL(sql) {
   // Split SQL into individual statements
   const statements = sql
     .split(/;\s*\n/)
-    .map(stmt => stmt.trim())
-    .filter(stmt => stmt && !stmt.startsWith("--"));
+    .map((stmt) => stmt.trim())
+    .filter((stmt) => stmt && !stmt.startsWith("--"));
 
   logInfo(`Found ${statements.length} SQL statements to execute`);
 
@@ -192,7 +190,9 @@ async function executeSQL(sql) {
     try {
       logInfo(`Executing statement ${i + 1}/${statements.length}...`);
 
-      const { error } = await supabase.rpc("exec_sql", { sql_statement: statement });
+      const { error } = await supabase.rpc("exec_sql", {
+        sql_statement: statement,
+      });
 
       if (error) {
         // Try using direct SQL execution (for Supabase older versions)
@@ -272,7 +272,10 @@ async function migrate() {
 
     // Show configuration
     log("\n⚙️  Migration Configuration:", colors.yellow);
-    log(`  Backup existing data: ${options.backup ? "Yes" : "No"}`, colors.white);
+    log(
+      `  Backup existing data: ${options.backup ? "Yes" : "No"}`,
+      colors.white,
+    );
     log(`  Clean existing data: ${options.clean ? "Yes" : "No"}`, colors.white);
     log(`  Force overwrite: ${options.force ? "Yes" : "No"}`, colors.white);
     log(`  Dry run mode: ${options.dryRun ? "Yes" : "No"}`, colors.white);
@@ -317,9 +320,11 @@ async function migrate() {
     log("\n🎉 Migration completed successfully!", colors.green);
 
     if (options.dryRun) {
-      log("\n💡 This was a dry run. Remove --dry-run to execute the migration.", colors.blue);
+      log(
+        "\n💡 This was a dry run. Remove --dry-run to execute the migration.",
+        colors.blue,
+      );
     }
-
   } catch (error) {
     logError(`Migration failed: ${error.message}`);
     process.exit(1);

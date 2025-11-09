@@ -1,12 +1,12 @@
 "use server";
 
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { createSafeActionClient } from "next-safe-action";
 import Stripe from "stripe";
 import { z } from "zod";
+import type { Database } from "@/lib/supabase-types";
 import { createSupabaseServerClient } from "@/lib/supabaseServer";
 import { getCurrentUser } from "./auth.actions";
-import { Database } from "@/lib/supabase-types";
-import type { SupabaseClient } from "@supabase/supabase-js";
 
 // Initialize Stripe with enhanced configuration
 if (!process.env.STRIPE_SECRET_KEY) {
@@ -171,8 +171,9 @@ export const createCheckoutSession = actionClient
         status: "pending" as const,
       };
 
-      const { data: newOrder, error: orderError } = await (supabase
-        .from("orders") as any)
+      const { data: newOrder, error: orderError } = await (
+        supabase.from("orders") as any
+      )
         .insert(orderData)
         .select("id, created_at")
         .single();
@@ -260,8 +261,7 @@ export const createCheckoutSession = actionClient
       }
 
       // Update order with Stripe session ID
-      const { error: updateError } = await (supabase
-        .from("orders") as any)
+      const { error: updateError } = await (supabase.from("orders") as any)
         .update({
           stripe_checkout_session_id: session.id,
           updated_at: new Date().toISOString(),

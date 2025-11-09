@@ -112,7 +112,9 @@ export const getGameById = actionClient
       if (error) {
         console.error("Get game by ID error:", error);
         // Return mock data if database fails
-        const mockGame = getMockGames().find((game) => game.id === parsedInput.gameId);
+        const mockGame = getMockGames().find(
+          (game) => game.id === parsedInput.gameId,
+        );
         if (!mockGame) {
           return {
             success: false,
@@ -134,7 +136,9 @@ export const getGameById = actionClient
     } catch (error) {
       console.error("Unexpected get game by ID error:", error);
       // Return mock data if database fails
-      const mockGame = getMockGames().find((game) => game.id === parsedInput.gameId);
+      const mockGame = getMockGames().find(
+        (game) => game.id === parsedInput.gameId,
+      );
       if (!mockGame) {
         return {
           success: false,

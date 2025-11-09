@@ -1,15 +1,15 @@
 "use client";
 
+import Image from "next/image";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { use, useEffect, useState } from "react";
 import { getGameById as getGameByIdAction } from "@/actions/games.actions";
-import Link from "next/link";
-import Image from "next/image";
 import { SkuDetailModal } from "@/components/features/sku-detail-modal";
-import { useSkuModalStore } from "@/stores/useSkuModalStore";
-import { GameWithSkus, Sku } from "@/lib/supabase-types";
-import { useEffect, useState, use } from "react";
 import { Button } from "@/components/ui/Button";
+import type { GameWithSkus, Sku } from "@/lib/supabase-types";
+import { useSkuModalStore } from "@/stores/useSkuModalStore";
 
 interface GameDetailPageProps {
   params: Promise<{

@@ -38,11 +38,12 @@ async function createAdminUser(email, password) {
   try {
     // Step 1: Create the auth user
     console.log("1️⃣ Creating authentication user...");
-    const { data: authData, error: authError } = await supabase.auth.admin.createUser({
-      email,
-      password,
-      email_confirm: true,
-    });
+    const { data: authData, error: authError } =
+      await supabase.auth.admin.createUser({
+        email,
+        password,
+        email_confirm: true,
+      });
 
     if (authError) {
       console.error("❌ Failed to create auth user:", authError.message);
@@ -108,7 +109,6 @@ async function createAdminUser(email, password) {
     console.log("   - Store these credentials securely");
     console.log("   - Change the password after first login");
     console.log("   - Never share these credentials");
-
   } catch (error) {
     console.error("❌ Unexpected error:", error.message);
     process.exit(1);
@@ -136,11 +136,10 @@ async function listAdminUsers() {
 
     console.log(`📊 Found ${data.length} admin user(s):`);
     data.forEach((admin, index) => {
-      console.log(`\n${index + 1}. ${admin.merchant_name || 'Admin'}`);
+      console.log(`\n${index + 1}. ${admin.merchant_name || "Admin"}`);
       console.log(`   ID: ${admin.id}`);
       console.log(`   Created: ${new Date(admin.created_at).toLocaleString()}`);
     });
-
   } catch (error) {
     console.error("❌ Unexpected error:", error.message);
     process.exit(1);
@@ -171,7 +170,6 @@ async function deleteAdminUser(userId) {
     }
 
     console.log("✅ Admin user deleted successfully");
-
   } catch (error) {
     console.error("❌ Unexpected error:", error.message);
     process.exit(1);
@@ -186,9 +184,13 @@ function showUsage() {
   console.log("  node scripts/setup-admin.js list");
   console.log("  node scripts/setup-admin.js delete <user-id>");
   console.log("\nExamples:");
-  console.log("  node scripts/setup-admin.js create admin@platform.com MySecurePassword123!");
+  console.log(
+    "  node scripts/setup-admin.js create admin@platform.com MySecurePassword123!",
+  );
   console.log("  node scripts/setup-admin.js list");
-  console.log("  node scripts/setup-admin.js delete 123e4567-e89b-12d3-a456-426614174000");
+  console.log(
+    "  node scripts/setup-admin.js delete 123e4567-e89b-12d3-a456-426614174000",
+  );
 }
 
 async function main() {

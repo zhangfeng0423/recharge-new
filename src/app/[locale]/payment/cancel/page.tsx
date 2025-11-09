@@ -1,7 +1,7 @@
+import { XCircle } from "lucide-react";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import Link from "next/link";
-import { XCircle } from "lucide-react";
 
 interface PaymentCancelPageProps {
   params: Promise<{
@@ -71,9 +71,19 @@ export default async function PaymentCancelPage({
             {t("helpful") || "Helpful Tips"}
           </h3>
           <ul className="text-sm text-blue-800 space-y-1 text-left">
-            <li>• {t("paymentSecurityTip") || "Your payment information is always secure"}</li>
-            <li>• {t("tryAgainTip") || "You can try the purchase again anytime"}</li>
-            <li>• {t("contactSupportTip") || "Contact support if you continue to have issues"}</li>
+            <li>
+              •{" "}
+              {t("paymentSecurityTip") ||
+                "Your payment information is always secure"}
+            </li>
+            <li>
+              • {t("tryAgainTip") || "You can try the purchase again anytime"}
+            </li>
+            <li>
+              •{" "}
+              {t("contactSupportTip") ||
+                "Contact support if you continue to have issues"}
+            </li>
           </ul>
         </div>
 

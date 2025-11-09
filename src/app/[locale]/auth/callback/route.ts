@@ -1,6 +1,6 @@
-import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
 import { createClient } from "@supabase/supabase-js";
+import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabaseServer";
 
 export async function GET(request: Request) {
@@ -29,7 +29,7 @@ export async function GET(request: Request) {
             cookies().delete(name);
           },
         },
-      }
+      },
     );
 
     const { error, data } = await supabase.auth.exchangeCodeForSession(code);
