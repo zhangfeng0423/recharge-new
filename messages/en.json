@@ -34,7 +34,10 @@
     "loginSuccess": "Login successful",
     "registerSuccess": "Registration successful",
     "loginError": "Login failed",
-    "registerError": "Registration failed"
+    "registerError": "Registration failed",
+    "googleSignIn": "Sign in with Google",
+    "googleSignInError": "Google sign in failed",
+    "googleSignInSuccess": "Successfully authenticated with Google!"
   },
   "games": {
     "title": "Games",

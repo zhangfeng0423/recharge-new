@@ -34,7 +34,10 @@
     "loginSuccess": "登录成功",
     "registerSuccess": "注册成功",
     "loginError": "登录失败",
-    "registerError": "注册失败"
+    "registerError": "注册失败",
+    "googleSignIn": "使用 Google 登录",
+    "googleSignInError": "Google 登录失败",
+    "googleSignInSuccess": "Google 认证成功！"
   },
   "games": {
     "title": "游戏",
