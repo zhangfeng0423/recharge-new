@@ -1,0 +1,78 @@
+{
+  "charge.succeeded": {
+    "id": "evt_1Jxxxxxxxxxxxxxxxxxxxx",
+    "object": "event",
+    "api_version": "2020-08-27",
+    "created": 1630000000,
+    "data": {
+      "object": {
+        "id": "ch_1Jxxxxxxxxxxxxxxxxxxxx",
+        "object": "charge",
+        "amount": 2000,
+        "amount_captured": 2000,
+        "amount_refunded": 0,
+        "currency": "usd",
+        "customer": "cus_xxxxxxxxxxxxxxxx",
+        "description": "Example charge",
+        "paid": true,
+        "payment_method": "pm_1Jxxxxxxxxxxxxxxxxxxxx",
+        "receipt_email": "jenny.rosen@example.com",
+        "status": "succeeded"
+      }
+    },
+    "livemode": false,
+    "pending_webhooks": 1,
+    "request": {
+      "id": "req_xxxxxxxxxxxxxxxx",
+      "idempotency_key": null
+    },
+    "type": "charge.succeeded"
+  },
+  "customer.subscription.created": {
+    "id": "evt_1Jyyyyyyyyyyyyyyyyyyyy",
+    "object": "event",
+    "api_version": "2020-08-27",
+    "created": 1630000100,
+    "data": {
+      "object": {
+        "id": "sub_1Jyyyyyyyyyyyyyyyyyyyy",
+        "object": "subscription",
+        "customer": "cus_xxxxxxxxxxxxxxxx",
+        "status": "active",
+        "items": {
+          "object": "list",
+          "data": [
+            {
+              "id": "si_yyyyyyyyyyyyyyyyyyyy",
+              "object": "subscription_item",
+              "price": {
+                "id": "price_1Jzzzzzzzzzzzzzzzzzz",
+                "object": "price",
+                "active": true,
+                "currency": "usd",
+                "product": "prod_yyyyyyyyyyyyyyyyyyyy",
+                "type": "recurring",
+                "unit_amount": 2000
+              },
+              "quantity": 1
+            }
+          ],
+          "has_more": false,
+          "total_count": 1,
+          "url": "/v1/subscription_items?subscription=sub_1Jyyyyyyyyyyyyyyyyyyyy"
+        },
+        "latest_invoice": "in_1Jyyyyyyyyyyyyyyyyyyyy",
+        "start_date": 1630000100,
+        "current_period_start": 1630000100,
+        "current_period_end": 1632592100
+      }
+    },
+    "livemode": false,
+    "pending_webhooks": 1,
+    "request": {
+      "id": "req_yyyyyyyyyyyyyyyy",
+      "idempotency_key": null
+    },
+    "type": "customer.subscription.created"
+  }
+}

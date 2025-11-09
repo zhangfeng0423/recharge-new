@@ -1,0 +1,79 @@
+{
+  "common": {
+    "loading": "加载中...",
+    "error": "错误",
+    "success": "成功",
+    "cancel": "取消",
+    "confirm": "确认",
+    "save": "保存",
+    "edit": "编辑",
+    "delete": "删除",
+    "search": "搜索",
+    "back": "返回",
+    "next": "下一步",
+    "previous": "上一步",
+    "submit": "提交",
+    "close": "关闭"
+  },
+  "nav": {
+    "home": "首页",
+    "games": "游戏",
+    "dashboard": "仪表盘",
+    "profile": "个人资料",
+    "logout": "退出登录"
+  },
+  "auth": {
+    "login": "登录",
+    "register": "注册",
+    "email": "邮箱",
+    "password": "密码",
+    "confirmPassword": "确认密码",
+    "forgotPassword": "忘记密码？",
+    "alreadyHaveAccount": "已有账户？",
+    "dontHaveAccount": "没有账户？",
+    "loginSuccess": "登录成功",
+    "registerSuccess": "注册成功",
+    "loginError": "登录失败",
+    "registerError": "注册失败"
+  },
+  "games": {
+    "title": "游戏",
+    "noGamesFound": "未找到游戏",
+    "selectGame": "选择游戏",
+    "gameDetails": "游戏详情",
+    "recharge": "充值"
+  },
+  "payment": {
+    "title": "支付",
+    "amount": "金额",
+    "total": "总计",
+    "paymentMethod": "支付方式",
+    "processPayment": "处理支付",
+    "paymentSuccess": "支付成功",
+    "paymentFailed": "支付失败",
+    "currency": "美元"
+  },
+  "dashboard": {
+    "welcome": "欢迎回来，{name}！",
+    "overview": "概览",
+    "analytics": "分析",
+    "orders": "订单",
+    "revenue": "收入",
+    "users": "用户"
+  },
+  "roles": {
+    "player": "玩家",
+    "merchant": "商家",
+    "admin": "管理员"
+  },
+  "validation": {
+    "required": "此字段为必填项",
+    "emailInvalid": "邮箱地址无效",
+    "passwordTooShort": "密码至少需要8个字符",
+    "passwordMismatch": "密码不匹配"
+  },
+  "home": {
+    "getStarted": "开始使用",
+    "learnMore": "了解更多"
+  }
+}

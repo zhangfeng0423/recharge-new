@@ -1,0 +1,39 @@
+import '@testing-library/jest-dom'
+import { beforeAll, afterEach, afterAll } from 'vitest'
+import { cleanup } from '@testing-library/react'
+import { server } from './src/mocks/server' // Assuming MSW setup
+
+// Setup MSW server for mocking API requests in tests
+beforeAll(() => server.listen())
+afterEach(() => {
+  server.resetHandlers()
+  cleanup() // Cleans up JSDOM after each test
+})
+afterAll(() => server.close())
+
+// Mock Next.js router
+vi.mock('next/router', () => ({
+  useRouter() {
+    return {
+      route: '/',
+      pathname: '/',
+      query: '',
+      asPath: '',
+      push: vi.fn(),
+      pop: vi.fn(),
+      reload: vi.fn(),
+      back: vi.fn(),
+      prefetch: vi.fn().mockResolvedValue(undefined),
+      beforePopState: vi.fn(),
+      events: {
+        on: vi.fn(),
+        off: vi.fn(),
+        emit: vi.fn(),
+      },
+    }
+  },
+}))
+
+// Mock environment variables for testing
+process.env.NODE_ENV = 'test'
+// Add any other test-specific environment variables here

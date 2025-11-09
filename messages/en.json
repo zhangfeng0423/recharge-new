@@ -1,0 +1,79 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "search": "Search",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "submit": "Submit",
+    "close": "Close"
+  },
+  "nav": {
+    "home": "Home",
+    "games": "Games",
+    "dashboard": "Dashboard",
+    "profile": "Profile",
+    "logout": "Logout"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "forgotPassword": "Forgot Password?",
+    "alreadyHaveAccount": "Already have an account?",
+    "dontHaveAccount": "Don't have an account?",
+    "loginSuccess": "Login successful",
+    "registerSuccess": "Registration successful",
+    "loginError": "Login failed",
+    "registerError": "Registration failed"
+  },
+  "games": {
+    "title": "Games",
+    "noGamesFound": "No games found",
+    "selectGame": "Select Game",
+    "gameDetails": "Game Details",
+    "recharge": "Recharge"
+  },
+  "payment": {
+    "title": "Payment",
+    "amount": "Amount",
+    "total": "Total",
+    "paymentMethod": "Payment Method",
+    "processPayment": "Process Payment",
+    "paymentSuccess": "Payment successful",
+    "paymentFailed": "Payment failed",
+    "currency": "USD"
+  },
+  "dashboard": {
+    "welcome": "Welcome back, {name}!",
+    "overview": "Overview",
+    "analytics": "Analytics",
+    "orders": "Orders",
+    "revenue": "Revenue",
+    "users": "Users"
+  },
+  "roles": {
+    "player": "Player",
+    "merchant": "Merchant",
+    "admin": "Admin"
+  },
+  "validation": {
+    "required": "This field is required",
+    "emailInvalid": "Invalid email address",
+    "passwordTooShort": "Password must be at least 8 characters",
+    "passwordMismatch": "Passwords do not match"
+  },
+  "home": {
+    "getStarted": "Get Started",
+    "learnMore": "Learn More"
+  }
+}
