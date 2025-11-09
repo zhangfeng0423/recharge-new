@@ -30,12 +30,12 @@ export function GoogleButton({
       try {
         const result = await signInWithGoogle();
 
-        if (result.data?.success && result.data.redirectUrl) {
+        if (result.success && result.redirectUrl) {
           // Redirect to the URL from Supabase
-          window.location.href = result.data.redirectUrl;
+          window.location.href = result.redirectUrl;
           onSuccess?.();
         } else {
-          onError?.(result.data?.message || "Google sign in failed");
+          onError?.(result.message || "Google sign in failed");
         }
       } catch (error) {
         onError?.("An unexpected error occurred");

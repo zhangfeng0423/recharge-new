@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { getSupabaseClient } from "@/lib/supabaseClient";
+import { cookies } from "next/headers";
+import { createClient } from "@supabase/supabase-js";
 import { createSupabaseServerClient } from "@/lib/supabaseServer";
 
 export async function GET(request: Request) {
@@ -8,7 +9,29 @@ export async function GET(request: Request) {
   const next = searchParams.get("next") ?? "/dashboard";
 
   if (code) {
-    const supabase = getSupabaseClient();
+    // Create a Supabase client for the callback
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        auth: {
+          autoRefreshToken: true,
+          persistSession: true,
+        },
+        cookies: {
+          get(name) {
+            return cookies().get(name)?.value;
+          },
+          set(name, value, options) {
+            cookies().set(name, value, { ...options, httpOnly: true });
+          },
+          remove(name, options) {
+            cookies().delete(name);
+          },
+        },
+      }
+    );
+
     const { error, data } = await supabase.auth.exchangeCodeForSession(code);
 
     if (error) {

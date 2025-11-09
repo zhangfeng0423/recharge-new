@@ -10,7 +10,7 @@
     }
   },
   "env": {
-    "NEXT_PUBLIC_APP_URL": "@recharge-steel.vercel.app",
+    "NEXT_PUBLIC_APP_URL": "https://recharge-steel.vercel.app",
     "NODE_ENV": "production"
   }
 }
