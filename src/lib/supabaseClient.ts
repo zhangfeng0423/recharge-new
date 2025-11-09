@@ -12,10 +12,6 @@ import type { Database } from "./supabase-types";
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
-console.log("🔗 Supabase Client initializing...");
-console.log("📍 URL:", supabaseUrl);
-console.log("🔑 Anon Key:", supabaseAnonKey ? "Set" : "Missing");
-
 /**
  * Creates a Supabase client for client-side usage
  * This client respects Row Level Security (RLS) policies

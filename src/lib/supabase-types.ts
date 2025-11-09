@@ -83,6 +83,7 @@ export interface SkuDescription {
 export interface SkuPrices {
   usd: number; // Amount in cents
   eur?: number; // Reserved for future use
+  gbp?: number; // Reserved for future use
   jpy?: number; // Reserved for future use
 }
 
@@ -90,9 +91,13 @@ export interface SkuPrices {
 // RELATIONSHIP TYPES
 // =============================================================================
 
-// Game with its related SKUs
+// Game with its related SKUs and merchant info
 export interface GameWithSkus extends Game {
   skus: Sku[];
+  merchant_name?: string | null;
+  profiles?: {
+    merchant_name?: string | null;
+  } | null;
 }
 
 // Order with all related data

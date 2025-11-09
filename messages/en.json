@@ -13,7 +13,17 @@
     "next": "Next",
     "previous": "Previous",
     "submit": "Submit",
-    "close": "Close"
+    "close": "Close",
+    "viewDetails": "View Details",
+    "noResults": "No results found",
+    "sortBy": "Sort by",
+    "filter": "Filter",
+    "testPageTitle": "Game Recharge Platform Test Page",
+    "testPageDescription": "Game Recharge Platform Test Page",
+    "testPageWorkingMessage": "If you can see this page, the basic Next.js setup is working.",
+    "toHome": "to Home",
+    "selectYourItem": "Select Your Item",
+    "viewDetailsButton": "View Details"
   },
   "nav": {
     "home": "Home",
@@ -35,16 +45,40 @@
     "registerSuccess": "Registration successful",
     "loginError": "Login failed",
     "registerError": "Registration failed",
+    "required_field_warning": "This field is required",
     "googleSignIn": "Sign in with Google",
     "googleSignInError": "Google sign in failed",
-    "googleSignInSuccess": "Successfully authenticated with Google!"
+    "googleSignInSuccess": "Successfully authenticated with Google!",
+    "roleLabel": "Role",
+    "merchantNameLabel": "Merchant Name",
+    "merchantNamePlaceholder": "Enter your merchant name",
+    "orDivider": "OR",
+    "googleAuthSuccessRedirect": "Successfully authenticated with Google! Redirecting..."
   },
   "games": {
     "title": "Games",
     "noGamesFound": "No games found",
     "selectGame": "Select Game",
     "gameDetails": "Game Details",
-    "recharge": "Recharge"
+    "recharge": "Recharge",
+    "selectItem": "Select Your Item",
+    "itemsAvailable": "{count} items available",
+    "fromPrice": "From {price}",
+    "popular": "Popular",
+    "featuredGames": "Featured Games",
+    "allGames": "All Games",
+    "searchPlaceholder": "Search games...",
+    "priceRange": "Price Range",
+    "category": "Category",
+    "merchant": "Merchant",
+    "description": "Description",
+    "noItemsAvailable": "No items available"
+  },
+  "purchase": {
+    "price": "Price",
+    "confirmPurchase": "Confirm Purchase",
+    "processing": "Processing...",
+    "genericError": "An unexpected error occurred. Please try again."
   },
   "payment": {
     "title": "Payment",
@@ -54,7 +88,10 @@
     "processPayment": "Process Payment",
     "paymentSuccess": "Payment successful",
     "paymentFailed": "Payment failed",
-    "currency": "USD"
+    "currency": "USD",
+    "securePayment": "Secure Payment",
+    "processing": "Processing...",
+    "completePurchase": "Complete Purchase"
   },
   "dashboard": {
     "welcome": "Welcome back, {name}!",
@@ -62,7 +99,11 @@
     "analytics": "Analytics",
     "orders": "Orders",
     "revenue": "Revenue",
-    "users": "Users"
+    "users": "Users",
+    "recentOrders": "Recent Orders",
+    "totalRevenue": "Total Revenue",
+    "totalOrders": "Total Orders",
+    "conversionRate": "Conversion Rate"
   },
   "roles": {
     "player": "Player",
@@ -77,6 +118,42 @@
   },
   "home": {
     "getStarted": "Get Started",
-    "learnMore": "Learn More"
+    "learnMore": "Learn More",
+    "heroTitle": "Game Recharge Platform",
+    "heroDescription": "Multi-tenant platform for game recharge and management",
+    "platformFeatures": "Platform Features",
+    "easyRecharge": "Easy Recharge",
+    "easyRechargeDesc": "Quick and secure game top-up process",
+    "multipleGames": "Multiple Games",
+    "multipleGamesDesc": "Support for various games and merchants",
+    "securePayments": "Secure Payments",
+    "securePaymentsDesc": "Safe and reliable payment processing",
+    "merchantDashboard": "Merchant Dashboard",
+    "merchantDashboardDesc": "Comprehensive tools for merchants",
+    "browseGames": "Browse Games",
+    "startRecharging": "Start Recharging"
+  },
+  "connection": {
+    "pageTitle": "Database Connection Test",
+    "loadingMessage": "Testing database connection...",
+    "statusHealthy": "Healthy",
+    "statusDegraded": "Degraded",
+    "statusError": "Error",
+    "statusUnknown": "Unknown",
+    "messagePrefix": "Status:",
+    "envVarsTitle": "Environment Variables",
+    "envVarMissing": "Missing:",
+    "tableConnectivityTitle": "Table Connectivity",
+    "overallStatus": "Overall:",
+    "testButtonTesting": "Testing...",
+    "testButtonSuccess": "✓ Success",
+    "testButtonFailed": "✗ Failed",
+    "retestButton": "Retest Connection",
+    "lastTested": "Last tested:",
+    "setupInstructionsTitle": "Connection Setup Instructions",
+    "setupInstruction1": "Copy .env.local.example to .env.local",
+    "setupInstruction2": "Fill in your Supabase project credentials from the Supabase Dashboard",
+    "setupInstruction3": "Ensure you have run the database migration in Supabase SQL Editor",
+    "setupInstruction4": "Restart your development server after updating environment variables"
   }
 }

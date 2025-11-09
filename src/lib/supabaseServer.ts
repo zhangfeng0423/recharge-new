@@ -8,7 +8,7 @@
 
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
-import { Database } from "./supabase-types";
+import type { Database } from "./supabase-types";
 
 // Environment variables with fallbacks for development
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -20,14 +20,6 @@ const supabasePoolerUrl = process.env.SUPABASE_POOLER_URL!;
 // For development, can use direct URL if pooler not set
 const databaseUrl =
   supabasePoolerUrl || process.env.SUPABASE_DATABASE_URL || supabaseUrl;
-
-console.log("🔗 Supabase Server Client initializing...");
-console.log("📍 URL:", supabaseUrl);
-console.log(
-  "🔄 Pooler URL:",
-  supabasePoolerUrl ? "Configured" : "Not configured",
-);
-console.log("🔑 Service Key:", supabaseServiceKey ? "Set" : "Missing");
 
 /**
  * Creates a Supabase client for server-side usage
@@ -156,7 +148,6 @@ export async function testDatabaseConnection(): Promise<boolean> {
       return false;
     }
 
-    console.log("✅ Database connection test successful");
     return true;
   } catch (error) {
     console.error("❌ Database connection test error:", error);

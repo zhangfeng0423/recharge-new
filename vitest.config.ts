@@ -1,5 +1,5 @@
-import react from "@vitejs/plugin-react";
 import path from "node:path";
+import react from "@vitejs/plugin-react";
 import { defineConfig } from "vitest/config";
 
 export default defineConfig({
@@ -7,7 +7,7 @@ export default defineConfig({
   test: {
     globals: true,
     environment: "node", // Use node environment for RLS testing
-    setupFiles: "./vitest.setup.ts",
+    setupFiles: ["./vitest.setup.ts", "./tests/setup.ts"],
     include: ["tests/**/*.test.ts", "tests/**/*.test.tsx"],
   },
   resolve: {

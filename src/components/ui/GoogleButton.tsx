@@ -1,9 +1,9 @@
 "use client";
 
+import { Loader2 } from "lucide-react";
 import React, { useState, useTransition } from "react";
 import { signInWithGoogle } from "@/actions/auth.actions";
 import { Button } from "@/components/ui/Button";
-import { Loader2 } from "lucide-react";
 
 interface GoogleButtonProps {
   className?: string;
@@ -30,7 +30,9 @@ export function GoogleButton({
       try {
         const result = await signInWithGoogle();
 
-        if (result.data?.success) {
+        if (result.data?.success && result.data.redirectUrl) {
+          // Redirect to the URL from Supabase
+          window.location.href = result.data.redirectUrl;
           onSuccess?.();
         } else {
           onError?.(result.data?.message || "Google sign in failed");

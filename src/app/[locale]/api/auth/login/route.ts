@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { loginAction } from "@/actions/auth.actions";
 
 export async function POST(request: NextRequest) {
@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
     } else {
       return NextResponse.json(
         result.data || { success: false, message: "Login failed" },
-        { status: 400 }
+        { status: 400 },
       );
     }
   } catch (error) {

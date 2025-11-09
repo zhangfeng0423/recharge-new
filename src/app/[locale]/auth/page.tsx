@@ -1,7 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
+import React, { useEffect, useState } from "react";
+import { Alert, AlertDescription } from "@/components/ui/Alert";
+import { Button } from "@/components/ui/Button";
 import {
   Card,
   CardContent,
@@ -9,12 +12,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
+import { GoogleButton } from "@/components/ui/GoogleButton";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
-import { Alert, AlertDescription } from "@/components/ui/Alert";
-import { GoogleButton } from "@/components/ui/GoogleButton";
-import { useRouter, useSearchParams } from "next/navigation";
 
 export default function AuthPage() {
   const t = useTranslations();
@@ -139,14 +139,14 @@ export default function AuthPage() {
       } else {
         setLoginState({
           success: false,
-          message: result.message || "Login failed",
+          message: result.message || t("auth.loginError"),
           pending: false,
         });
       }
     } catch (error) {
       setLoginState({
         success: false,
-        message: "An unexpected error occurred",
+        message: t("common.error"), // Using common error translation
         pending: false,
       });
     }
@@ -182,14 +182,14 @@ export default function AuthPage() {
       } else {
         setRegisterState({
           success: false,
-          message: result.message || "Registration failed",
+          message: result.message || t("auth.registerError"),
           pending: false,
         });
       }
     } catch (error) {
       setRegisterState({
         success: false,
-        message: "An unexpected error occurred",
+        message: t("common.error"), // Using common error translation
         pending: false,
       });
     }
@@ -333,7 +333,7 @@ export default function AuthPage() {
 
                 {/* Role Selection */}
                 <div className="space-y-2">
-                  <Label>Role</Label>
+                  <Label>{t("auth.roleLabel")}</Label>
                   <div className="flex space-x-4">
                     <div className="flex items-center space-x-2">
                       <input
@@ -371,12 +371,14 @@ export default function AuthPage() {
                 {/* Merchant Name (only show if MERCHANT role is selected) */}
                 {selectedRole === "MERCHANT" && (
                   <div className="space-y-2">
-                    <Label htmlFor="merchant-name">Merchant Name</Label>
+                    <Label htmlFor="merchant-name">
+                      {t("auth.merchantNameLabel")}
+                    </Label>
                     <Input
                       id="merchant-name"
                       name="merchantName"
                       type="text"
-                      placeholder="Enter your merchant name"
+                      placeholder={t("auth.merchantNamePlaceholder")}
                       value={formData.merchantName}
                       onChange={handleInputChange}
                       required={selectedRole === "MERCHANT"}
@@ -403,7 +405,9 @@ export default function AuthPage() {
                 <div className="w-full border-t border-gray-300" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">OR</span>
+                <span className="px-2 bg-white text-gray-500">
+                  {t("auth.orDivider")}
+                </span>
               </div>
             </div>
 
@@ -428,7 +432,7 @@ export default function AuthPage() {
             {googleAuthState.success && (
               <Alert className="mt-4">
                 <AlertDescription>
-                  Successfully authenticated with Google! Redirecting...
+                  {t("auth.googleAuthSuccessRedirect")}
                 </AlertDescription>
               </Alert>
             )}
@@ -441,7 +445,6 @@ export default function AuthPage() {
                   className="text-sm text-blue-600 hover:text-blue-500"
                   onClick={() => {
                     // TODO: Implement forgot password flow
-                    console.log("Forgot password clicked");
                   }}
                 >
                   {t("auth.forgotPassword")}

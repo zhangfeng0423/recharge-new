@@ -1,11 +1,11 @@
+import { NextResponse } from "next/server";
 import { getSupabaseClient } from "@/lib/supabaseClient";
 import { createSupabaseServerClient } from "@/lib/supabaseServer";
-import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
-  const code = searchParams.get('code');
-  const next = searchParams.get('next') ?? '/dashboard';
+  const code = searchParams.get("code");
+  const next = searchParams.get("next") ?? "/dashboard";
 
   if (code) {
     const supabase = getSupabaseClient();
@@ -13,7 +13,9 @@ export async function GET(request: Request) {
 
     if (error) {
       console.error("OAuth callback error:", error);
-      return NextResponse.redirect(`${origin}/auth?error=${encodeURIComponent(error.message)}`);
+      return NextResponse.redirect(
+        `${origin}/auth?error=${encodeURIComponent(error.message)}`,
+      );
     }
 
     if (data.user) {
@@ -25,7 +27,7 @@ export async function GET(request: Request) {
         .eq("id", data.user.id)
         .single();
 
-      if (profileError && profileError.code === 'PGRST116') {
+      if (profileError && profileError.code === "PGRST116") {
         // Profile doesn't exist, create one with default USER role
         const profileData = {
           id: data.user.id,
@@ -39,12 +41,14 @@ export async function GET(request: Request) {
 
         if (createError) {
           console.error("Profile creation error:", createError);
-          return NextResponse.redirect(`${origin}/auth?error=Failed to create user profile`);
+          return NextResponse.redirect(
+            `${origin}/auth?error=Failed to create user profile`,
+          );
         }
       }
 
       // Successfully authenticated and profile exists, redirect to intended page
-      const redirectUrl = next === '/' ? '/dashboard' : next;
+      const redirectUrl = next === "/" ? "/dashboard" : next;
       return NextResponse.redirect(`${origin}${redirectUrl}?welcome=true`);
     }
   }

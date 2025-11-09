@@ -13,7 +13,17 @@
     "next": "下一步",
     "previous": "上一步",
     "submit": "提交",
-    "close": "关闭"
+    "close": "关闭",
+    "viewDetails": "查看详情",
+    "noResults": "未找到结果",
+    "sortBy": "排序方式",
+    "filter": "筛选",
+    "testPageTitle": "游戏充值平台测试页面",
+    "testPageDescription": "游戏充值平台测试页面",
+    "testPageWorkingMessage": "如果您能看到此页面，则表示基本的 Next.js 设置正常工作。",
+    "toHome": "返回主页",
+    "selectYourItem": "选择您的物品",
+    "viewDetailsButton": "查看详情"
   },
   "nav": {
     "home": "首页",
@@ -35,16 +45,40 @@
     "registerSuccess": "注册成功",
     "loginError": "登录失败",
     "registerError": "注册失败",
+    "required_field_warning": "此字段为必填项",
     "googleSignIn": "使用 Google 登录",
     "googleSignInError": "Google 登录失败",
-    "googleSignInSuccess": "Google 认证成功！"
+    "googleSignInSuccess": "Google 认证成功！",
+    "roleLabel": "角色",
+    "merchantNameLabel": "商家名称",
+    "merchantNamePlaceholder": "输入您的商家名称",
+    "orDivider": "或",
+    "googleAuthSuccessRedirect": "Google 认证成功！正在重定向..."
   },
   "games": {
     "title": "游戏",
     "noGamesFound": "未找到游戏",
     "selectGame": "选择游戏",
     "gameDetails": "游戏详情",
-    "recharge": "充值"
+    "recharge": "充值",
+    "selectItem": "选择您的物品",
+    "itemsAvailable": "共 {count} 个物品",
+    "fromPrice": "起价 {price}",
+    "popular": "热门",
+    "featuredGames": "精选游戏",
+    "allGames": "全部游戏",
+    "searchPlaceholder": "搜索游戏...",
+    "priceRange": "价格范围",
+    "category": "分类",
+    "merchant": "商家",
+    "description": "描述",
+    "noItemsAvailable": "暂无可用物品"
+  },
+  "purchase": {
+    "price": "价格",
+    "confirmPurchase": "确认购买",
+    "processing": "处理中...",
+    "genericError": "发生未知错误，请重试。"
   },
   "payment": {
     "title": "支付",
@@ -54,7 +88,10 @@
     "processPayment": "处理支付",
     "paymentSuccess": "支付成功",
     "paymentFailed": "支付失败",
-    "currency": "美元"
+    "currency": "美元",
+    "securePayment": "安全支付",
+    "processing": "处理中...",
+    "completePurchase": "完成购买"
   },
   "dashboard": {
     "welcome": "欢迎回来，{name}！",
@@ -62,7 +99,11 @@
     "analytics": "分析",
     "orders": "订单",
     "revenue": "收入",
-    "users": "用户"
+    "users": "用户",
+    "recentOrders": "最近订单",
+    "totalRevenue": "总收入",
+    "totalOrders": "总订单数",
+    "conversionRate": "转化率"
   },
   "roles": {
     "player": "玩家",
@@ -77,6 +118,42 @@
   },
   "home": {
     "getStarted": "开始使用",
-    "learnMore": "了解更多"
+    "learnMore": "了解更多",
+    "heroTitle": "游戏充值平台",
+    "heroDescription": "多租户游戏充值和管理平台",
+    "platformFeatures": "平台特色",
+    "easyRecharge": "便捷充值",
+    "easyRechargeDesc": "快速安全的游戏充值流程",
+    "multipleGames": "多样游戏",
+    "multipleGamesDesc": "支持各种游戏和商家",
+    "securePayments": "安全支付",
+    "securePaymentsDesc": "安全可靠的支付处理",
+    "merchantDashboard": "商家仪表盘",
+    "merchantDashboardDesc": "为商家提供全面的工具",
+    "browseGames": "浏览游戏",
+    "startRecharging": "开始充值"
+  },
+  "connection": {
+    "pageTitle": "数据库连接测试",
+    "loadingMessage": "正在测试数据库连接...",
+    "statusHealthy": "健康",
+    "statusDegraded": "降级",
+    "statusError": "错误",
+    "statusUnknown": "未知",
+    "messagePrefix": "状态：",
+    "envVarsTitle": "环境变量",
+    "envVarMissing": "缺失：",
+    "tableConnectivityTitle": "表连接性",
+    "overallStatus": "总体：",
+    "testButtonTesting": "测试中...",
+    "testButtonSuccess": "✓ 成功",
+    "testButtonFailed": "✗ 失败",
+    "retestButton": "重新测试连接",
+    "lastTested": "上次测试时间：",
+    "setupInstructionsTitle": "连接设置说明",
+    "setupInstruction1": "将 .env.local.example 复制到 .env.local",
+    "setupInstruction2": "从 Supabase 控制台填写您的 Supabase 项目凭据",
+    "setupInstruction3": "确保您已在 Supabase SQL 编辑器中运行数据库迁移",
+    "setupInstruction4": "更新环境变量后重启您的开发服务器"
   }
 }

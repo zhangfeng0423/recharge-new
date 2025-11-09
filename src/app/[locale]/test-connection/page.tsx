@@ -7,8 +7,8 @@
 
 "use client";
 
-import React, { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
+import React, { useEffect, useState } from "react";
 
 interface ConnectionStatus {
   status: string;
@@ -45,7 +45,7 @@ export default function TestConnectionPage() {
     } catch (error) {
       setStatus({
         status: "error",
-        message: "Failed to test connection",
+        message: t("genericError"), // Using a generic error translation
         error: error instanceof Error ? error.message : "Unknown error",
         timestamp: new Date().toISOString(),
       });
@@ -66,10 +66,10 @@ export default function TestConnectionPage() {
       });
       const data = await response.json();
       alert(
-        `Table ${tableName}: ${data.status}${data.error ? ` - ${data.error}` : ""}`,
+        `${t("table")} ${tableName}: ${data.status}${data.error ? ` - ${data.error}` : ""}`,
       );
     } catch (error) {
-      alert(`Failed to test table ${tableName}: ${error}`);
+      alert(`${t("failedToTestTable")} ${tableName}: ${error}`);
     } finally {
       setTestingTable("");
     }
@@ -80,7 +80,7 @@ export default function TestConnectionPage() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p>Testing database connection...</p>
+          <p>{t("loadingMessage")}</p>
         </div>
       </div>
     );
@@ -92,7 +92,7 @@ export default function TestConnectionPage() {
         <div className="bg-white shadow rounded-lg">
           <div className="px-4 py-5 sm:p-6">
             <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
-              Database Connection Test
+              {t("pageTitle")}
             </h3>
 
             {/* Status Overview */}
@@ -125,7 +125,8 @@ export default function TestConnectionPage() {
                           : "text-red-800"
                     }`}
                   >
-                    Status: {status?.status?.toUpperCase() || "UNKNOWN"}
+                    {t("messagePrefix")}{" "}
+                    {status?.status?.toUpperCase() || t("statusUnknown")}
                   </h4>
                   <p
                     className={`text-sm mt-1 ${
@@ -146,7 +147,7 @@ export default function TestConnectionPage() {
             {status?.environment && (
               <div className="mb-6">
                 <h4 className="font-medium text-gray-900 mb-3">
-                  Environment Variables
+                  {t("envVarsTitle")}
                 </h4>
                 <div className="grid grid-cols-2 gap-4">
                   {Object.entries(status.environment.configured).map(
@@ -164,7 +165,7 @@ export default function TestConnectionPage() {
                 </div>
                 {status.environment.missing && (
                   <div className="mt-2 p-2 bg-red-50 rounded text-sm text-red-600">
-                    Missing: {status.environment.missing.join(", ")}
+                    {t("envVarMissing")} {status.environment.missing.join(", ")}
                   </div>
                 )}
               </div>
@@ -174,11 +175,11 @@ export default function TestConnectionPage() {
             {status?.connectivity && (
               <div className="mb-6">
                 <h4 className="font-medium text-gray-900 mb-3">
-                  Table Connectivity
+                  {t("tableConnectivityTitle")}
                 </h4>
                 <div className="mb-2">
                   <span className="text-sm text-gray-600">
-                    Overall: {status.connectivity.overall}
+                    {t("overallStatus")} {status.connectivity.overall}
                   </span>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
@@ -199,10 +200,10 @@ export default function TestConnectionPage() {
                           } ${testingTable === table ? "opacity-50 cursor-not-allowed" : ""}`}
                         >
                           {testingTable === table
-                            ? "Testing..."
+                            ? t("testButtonTesting")
                             : result === "success"
-                              ? "✓ Success"
-                              : "✗ Failed"}
+                              ? t("testButtonSuccess")
+                              : t("testButtonFailed")}
                         </button>
                       </div>
                     ),
@@ -217,13 +218,13 @@ export default function TestConnectionPage() {
                 onClick={testConnection}
                 className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                Retest Connection
+                {t("retestButton")}
               </button>
               <div className="text-sm text-gray-500">
-                Last tested:{" "}
+                {t("lastTested")}{" "}
                 {status?.timestamp
                   ? new Date(status.timestamp).toLocaleString()
-                  : "Never"}
+                  : t("never")}
               </div>
             </div>
           </div>
@@ -232,27 +233,20 @@ export default function TestConnectionPage() {
         {/* Instructions */}
         <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
           <h4 className="font-medium text-blue-900 mb-2">
-            Connection Setup Instructions
+            {t("setupInstructionsTitle")}
           </h4>
           <ol className="text-sm text-blue-800 space-y-1 list-decimal list-inside">
             <li>
-              Copy{" "}
+              {t("setupInstruction1")}{" "}
               <code className="bg-blue-100 px-1 rounded">
                 .env.local.example
               </code>{" "}
-              to <code className="bg-blue-100 px-1 rounded">.env.local</code>
+              {t("to")}{" "}
+              <code className="bg-blue-100 px-1 rounded">.env.local</code>
             </li>
-            <li>
-              Fill in your Supabase project credentials from the Supabase
-              Dashboard
-            </li>
-            <li>
-              Ensure you have run the database migration in Supabase SQL Editor
-            </li>
-            <li>
-              Restart your development server after updating environment
-              variables
-            </li>
+            <li>{t("setupInstruction2")}</li>
+            <li>{t("setupInstruction3")}</li>
+            <li>{t("setupInstruction4")}</li>
           </ol>
         </div>
       </div>

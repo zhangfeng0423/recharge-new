@@ -1,13 +1,13 @@
 "use server";
 
-import { createSafeActionClient } from "next-safe-action";
-import { z } from "zod";
-import { createSupabaseClient } from "@/lib/supabaseClient";
-import { createSupabaseServerClient } from "@/lib/supabaseServer";
-import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { createSafeActionClient } from "next-safe-action";
+import { z } from "zod";
 import type { Database } from "@/lib/supabase-types";
+import { createSupabaseClient } from "@/lib/supabaseClient";
+import { createSupabaseServerClient } from "@/lib/supabaseServer";
 
 // Create the action client
 const actionClient = createSafeActionClient({
@@ -64,6 +64,7 @@ export interface AuthResult {
     email: string;
     role: string;
   };
+  redirectUrl?: string;
 }
 
 // Login action
@@ -369,7 +370,7 @@ export const signInWithGoogle = actionClient.action(
     try {
       const supabase = createSupabaseClient();
       const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
+        provider: "google",
         options: {
           redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`,
         },
@@ -383,11 +384,19 @@ export const signInWithGoogle = actionClient.action(
         };
       }
 
+      if (!data.url) {
+        return {
+          success: false,
+          message: "No redirect URL returned from Google sign in",
+        };
+      }
+
       // For OAuth, the redirect happens automatically
       // This action is mainly for initiating the flow
       return {
         success: true,
         message: "Redirecting to Google for authentication...",
+        redirectUrl: data.url,
       };
     } catch (error) {
       console.error("Unexpected Google sign in error:", error);
@@ -396,7 +405,7 @@ export const signInWithGoogle = actionClient.action(
         message: "An unexpected error occurred during Google sign in",
       };
     }
-  }
+  },
 );
 
 // Handle OAuth callback
@@ -425,7 +434,7 @@ export async function handleAuthCallback() {
       .eq("id", data.session.user.id)
       .single();
 
-    if (profileError && profileError.code === 'PGRST116') {
+    if (profileError && profileError.code === "PGRST116") {
       // Profile doesn't exist, create one
       const profileData = {
         id: data.session.user.id,

@@ -6,9 +6,9 @@
  * the policy logic according to the PRD requirements.
  */
 
-import { describe, it, expect, beforeAll } from "vitest";
 import { readFileSync } from "fs";
 import path from "path";
+import { beforeAll, describe, expect, it } from "vitest";
 
 describe("RLS Policy Schema Validation", () => {
   let schemaSQL: string;

@@ -8,8 +8,8 @@
  */
 
 import { createClient } from "@supabase/supabase-js";
-import { readFileSync } from "fs";
-import path from "path";
+import { readFileSync } from "node:fs";
+import path from "node:path";
 
 // ANSI colors for console output
 const colors = {
@@ -83,13 +83,13 @@ async function checkConnection(): Promise<ConnectionTestResult> {
       result.environment.issues.push(`Missing required: ${envVar}`);
       result.environment.configured = false;
     } else {
-      success(`${envVar}: ${process.env[envVar]!.substring(0, 20)}...`);
+      success(`${envVar}: ${process.env[envVar]?.substring(0, 20)}...`);
     }
   }
 
   for (const envVar of optionalEnvVars) {
     if (process.env[envVar]) {
-      success(`${envVar}: ${process.env[envVar]!.substring(0, 20)}...`);
+      success(`${envVar}: ${process.env[envVar]?.substring(0, 20)}...`);
     } else {
       warning(`${envVar}: Not configured (optional)`);
     }

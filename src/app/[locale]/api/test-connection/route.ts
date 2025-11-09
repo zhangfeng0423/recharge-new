@@ -5,16 +5,14 @@
  * It's useful for verifying that the database is properly configured and accessible.
  */
 
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import {
-  getSupabaseServerClient,
   getDatabaseHealth,
+  getSupabaseServerClient,
 } from "@/lib/supabaseServer";
 
 export async function GET(request: NextRequest) {
   try {
-    console.log("🧪 Testing database connection...");
-
     // Check if environment variables are configured
     const envCheck = {
       supabaseUrl: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
