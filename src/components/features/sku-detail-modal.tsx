@@ -21,9 +21,22 @@ export function SkuDetailModal() {
 
     setError(null);
     startTransition(async () => {
-      // TODO: Implement actual checkout logic
-      console.log("Purchase clicked for SKU:", sku.id, "Locale:", locale);
-      setError("Purchase functionality coming soon!");
+      try {
+        const result = await createCheckoutSession({
+          skuId: sku.id,
+          locale: locale as "en" | "zh",
+        });
+
+        if (result.data?.success && result.data.checkoutUrl) {
+          // Redirect to Stripe Checkout
+          window.location.href = result.data.checkoutUrl;
+        } else {
+          setError(result.data?.message || "Failed to create checkout session");
+        }
+      } catch (error) {
+        console.error("Checkout error:", error);
+        setError("An error occurred while processing your purchase");
+      }
     });
   };
 

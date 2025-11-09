@@ -78,7 +78,19 @@
     "price": "Price",
     "confirmPurchase": "Confirm Purchase",
     "processing": "Processing...",
-    "genericError": "An unexpected error occurred. Please try again."
+    "genericError": "An unexpected error occurred. Please try again.",
+    "paymentSuccess": "Payment Successful!",
+    "paymentSuccessMessage": "Thank you for your purchase! Your payment has been processed successfully.",
+    "paymentCanceled": "Payment Canceled",
+    "paymentCanceledMessage": "Your payment has been canceled. No charges were made.",
+    "transactionId": "Transaction ID",
+    "backToStore": "Back to Store",
+    "browseMoreGames": "Browse More Games",
+    "tryAgain": "Try Again",
+    "helpful": "Helpful Tips",
+    "paymentSecurityTip": "Your payment information is always secure",
+    "tryAgainTip": "You can try the purchase again anytime",
+    "contactSupportTip": "Contact support if you continue to have issues"
   },
   "payment": {
     "title": "Payment",
@@ -115,6 +127,10 @@
     "emailInvalid": "Invalid email address",
     "passwordTooShort": "Password must be at least 8 characters",
     "passwordMismatch": "Passwords do not match"
+  },
+  "support": {
+    "needHelp": "Need help?",
+    "contactSupport": "Contact Support"
   },
   "home": {
     "getStarted": "Get Started",

@@ -36,7 +36,7 @@ const actionClient = createSafeActionClient({
 
 // Enhanced validation schema with security checks
 const checkoutSchema = z.object({
-  skuId: z.string().uuid("Invalid SKU ID format"),
+  skuId: z.string().min(1, "SKU ID is required"),
   locale: z.enum(["en", "zh"]),
 });
 

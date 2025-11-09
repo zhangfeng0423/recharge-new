@@ -78,7 +78,19 @@
     "price": "价格",
     "confirmPurchase": "确认购买",
     "processing": "处理中...",
-    "genericError": "发生未知错误，请重试。"
+    "genericError": "发生未知错误，请重试。",
+    "paymentSuccess": "支付成功！",
+    "paymentSuccessMessage": "感谢您的购买！您的支付已成功处理。",
+    "paymentCanceled": "支付已取消",
+    "paymentCanceledMessage": "您的支付已取消。未产生任何费用。",
+    "transactionId": "交易ID",
+    "backToStore": "返回商店",
+    "browseMoreGames": "浏览更多游戏",
+    "tryAgain": "重试",
+    "helpful": "有用提示",
+    "paymentSecurityTip": "您的支付信息始终是安全的",
+    "tryAgainTip": "您可以随时重试购买",
+    "contactSupportTip": "如果持续遇到问题，请联系客服"
   },
   "payment": {
     "title": "支付",
@@ -115,6 +127,10 @@
     "emailInvalid": "邮箱地址无效",
     "passwordTooShort": "密码至少需要8个字符",
     "passwordMismatch": "密码不匹配"
+  },
+  "support": {
+    "needHelp": "需要帮助？",
+    "contactSupport": "联系客服"
   },
   "home": {
     "getStarted": "开始使用",
