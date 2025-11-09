@@ -410,7 +410,8 @@ export default function AuthPage() {
             {/* Google Sign In */}
             <GoogleButton
               onSuccess={() => {
-                setGoogleAuthState({ error: "", success: true });
+                // Google OAuth will redirect automatically, no need to show success message here
+                // The redirect happens via the Supabase OAuth flow
               }}
               onError={(error) => {
                 setGoogleAuthState({ error, success: false });

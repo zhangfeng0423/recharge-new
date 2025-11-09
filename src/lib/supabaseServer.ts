@@ -6,9 +6,9 @@
  * IMPORTANT: Always use the PgBouncer (Connection Pooler) URL for production.
  */
 
-import { createClient, type SupabaseClient } from '@supabase/supabase-js';
-import { cookies } from 'next/headers';
-import { Database } from './supabase-types';
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { cookies } from "next/headers";
+import { Database } from "./supabase-types";
 
 // Environment variables with fallbacks for development
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -18,12 +18,16 @@ const supabasePoolerUrl = process.env.SUPABASE_POOLER_URL!;
 // Determine which database URL to use
 // For production, always use the pooler URL
 // For development, can use direct URL if pooler not set
-const databaseUrl = supabasePoolerUrl || process.env.SUPABASE_DATABASE_URL || supabaseUrl;
+const databaseUrl =
+  supabasePoolerUrl || process.env.SUPABASE_DATABASE_URL || supabaseUrl;
 
-console.log('🔗 Supabase Server Client initializing...');
-console.log('📍 URL:', supabaseUrl);
-console.log('🔄 Pooler URL:', supabasePoolerUrl ? 'Configured' : 'Not configured');
-console.log('🔑 Service Key:', supabaseServiceKey ? 'Set' : 'Missing');
+console.log("🔗 Supabase Server Client initializing...");
+console.log("📍 URL:", supabaseUrl);
+console.log(
+  "🔄 Pooler URL:",
+  supabasePoolerUrl ? "Configured" : "Not configured",
+);
+console.log("🔑 Service Key:", supabaseServiceKey ? "Set" : "Missing");
 
 /**
  * Creates a Supabase client for server-side usage
@@ -31,32 +35,28 @@ console.log('🔑 Service Key:', supabaseServiceKey ? 'Set' : 'Missing');
  */
 export function createSupabaseServerClient(): SupabaseClient<Database> {
   try {
-    const client = createClient<Database>(
-      supabaseUrl,
-      supabaseServiceKey,
-      {
-        auth: {
-          // Disable auto-refresh for server-side usage
-          autoRefreshToken: false,
-          persistSession: false,
-          detectSessionInUrl: false,
+    const client = createClient<Database>(supabaseUrl, supabaseServiceKey, {
+      auth: {
+        // Disable auto-refresh for server-side usage
+        autoRefreshToken: false,
+        persistSession: false,
+        detectSessionInUrl: false,
+      },
+      db: {
+        schema: "public",
+      },
+      global: {
+        headers: {
+          // Add any custom headers needed
+          "X-Custom-Header": "game-recharge-platform",
         },
-        db: {
-          schema: 'public',
-        },
-        global: {
-          headers: {
-            // Add any custom headers needed
-            'X-Custom-Header': 'game-recharge-platform',
-          },
-        },
-      }
-    );
+      },
+    });
 
     return client;
   } catch (error) {
-    console.error('❌ Failed to create Supabase server client:', error);
-    throw new Error('Database connection failed');
+    console.error("❌ Failed to create Supabase server client:", error);
+    throw new Error("Database connection failed");
   }
 }
 
@@ -77,55 +77,39 @@ export function createSupabaseAdminClient(): SupabaseClient<Database> {
           detectSessionInUrl: false,
         },
         db: {
-          schema: 'public',
+          schema: "public",
         },
         global: {
           headers: {
-            'X-Admin-Access': 'true',
+            "X-Admin-Access": "true",
           },
         },
-      }
+      },
     );
 
     return adminClient;
   } catch (error) {
-    console.error('❌ Failed to create Supabase admin client:', error);
-    throw new Error('Admin database connection failed');
+    console.error("❌ Failed to create Supabase admin client:", error);
+    throw new Error("Admin database connection failed");
   }
 }
 
 /**
  * Creates a Supabase client for server-side usage with authentication context
  * Used when you need to access data as a specific user
+ * Note: Cookie handling will be implemented when auth flow is added
  */
 export function createSupabaseServerClientForUser(): SupabaseClient<Database> {
   try {
-    const cookieStore = cookies();
-
-    const client = createClient<Database>(
-      supabaseUrl,
-      supabaseServiceKey,
-      {
-        auth: {
-          autoRefreshToken: false,
-          persistSession: false,
-          detectSessionInUrl: false,
-        },
-        cookies: {
-          getAll: () => cookieStore.getAll(),
-          setAll: (cookiesToSet) => {
-            cookiesToSet.forEach(({ name, value, options }) => {
-              cookieStore.set(name, value, options);
-            });
-          },
-        },
-      }
-    );
-
-    return client;
+    // For now, return the same client as the basic server client
+    // Cookie handling will be added when we implement the authentication flow
+    return createSupabaseServerClient();
   } catch (error) {
-    console.error('❌ Failed to create Supabase server client for user:', error);
-    throw new Error('User database connection failed');
+    console.error(
+      "❌ Failed to create Supabase server client for user:",
+      error,
+    );
+    throw new Error("User database connection failed");
   }
 }
 
@@ -163,19 +147,19 @@ export async function testDatabaseConnection(): Promise<boolean> {
 
     // Test basic connectivity by checking if we can access system tables
     const { data, error } = await client
-      .from('profiles')
-      .select('count')
+      .from("profiles")
+      .select("count")
       .limit(1);
 
     if (error) {
-      console.error('❌ Database connection test failed:', error.message);
+      console.error("❌ Database connection test failed:", error.message);
       return false;
     }
 
-    console.log('✅ Database connection test successful');
+    console.log("✅ Database connection test successful");
     return true;
   } catch (error) {
-    console.error('❌ Database connection test error:', error);
+    console.error("❌ Database connection test error:", error);
     return false;
   }
 }
@@ -191,34 +175,46 @@ export async function getDatabaseHealth() {
     // Test multiple aspects of the database
     const results = await Promise.allSettled([
       // Test basic connectivity
-      client.from('profiles').select('count').limit(1),
+      client
+        .from("profiles")
+        .select("count")
+        .limit(1),
       // Test RLS is enabled
-      client.from('games').select('count').limit(1),
+      client
+        .from("games")
+        .select("count")
+        .limit(1),
       // Test foreign key relationships
-      client.from('skus').select('count').limit(1),
+      client
+        .from("skus")
+        .select("count")
+        .limit(1),
       // Test indexes are working
-      client.from('orders').select('count').limit(1),
+      client
+        .from("orders")
+        .select("count")
+        .limit(1),
     ]);
 
-    const successCount = results.filter(r => r.status === 'fulfilled').length;
+    const successCount = results.filter((r) => r.status === "fulfilled").length;
     const totalCount = results.length;
 
     return {
-      status: successCount === totalCount ? 'healthy' : 'degraded',
+      status: successCount === totalCount ? "healthy" : "degraded",
       connectivity: {
-        profiles: results[0].status === 'fulfilled',
-        games: results[1].status === 'fulfilled',
-        skus: results[2].status === 'fulfilled',
-        orders: results[3].status === 'fulfilled',
+        profiles: results[0].status === "fulfilled",
+        games: results[1].status === "fulfilled",
+        skus: results[2].status === "fulfilled",
+        orders: results[3].status === "fulfilled",
       },
       successRate: `${successCount}/${totalCount}`,
       timestamp: new Date().toISOString(),
     };
   } catch (error) {
-    console.error('❌ Database health check failed:', error);
+    console.error("❌ Database health check failed:", error);
     return {
-      status: 'unhealthy',
-      error: error instanceof Error ? error.message : 'Unknown error',
+      status: "unhealthy",
+      error: error instanceof Error ? error.message : "Unknown error",
       timestamp: new Date().toISOString(),
     };
   }

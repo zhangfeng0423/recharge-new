@@ -5,16 +5,16 @@
  * It uses the anonymous key and respects Row Level Security (RLS).
  */
 
-import { createClient, type SupabaseClient } from '@supabase/supabase-js';
-import type { Database } from './supabase-types';
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "./supabase-types";
 
 // Environment variables
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
-console.log('🔗 Supabase Client initializing...');
-console.log('📍 URL:', supabaseUrl);
-console.log('🔑 Anon Key:', supabaseAnonKey ? 'Set' : 'Missing');
+console.log("🔗 Supabase Client initializing...");
+console.log("📍 URL:", supabaseUrl);
+console.log("🔑 Anon Key:", supabaseAnonKey ? "Set" : "Missing");
 
 /**
  * Creates a Supabase client for client-side usage
@@ -30,19 +30,19 @@ export function createSupabaseClient(): SupabaseClient<Database> {
         detectSessionInUrl: true,
       },
       db: {
-        schema: 'public',
+        schema: "public",
       },
       global: {
         headers: {
-          'X-Custom-Header': 'game-recharge-platform',
+          "X-Custom-Header": "game-recharge-platform",
         },
       },
     });
 
     return client;
   } catch (error) {
-    console.error('❌ Failed to create Supabase client:', error);
-    throw new Error('Client database connection failed');
+    console.error("❌ Failed to create Supabase client:", error);
+    throw new Error("Client database connection failed");
   }
 }
 

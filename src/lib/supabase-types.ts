@@ -24,7 +24,7 @@ export interface BaseTimestamps {
 
 export interface Profile extends BaseTimestamps {
   id: string; // UUID, references auth.users.id
-  role: 'USER' | 'MERCHANT' | 'ADMIN';
+  role: "USER" | "MERCHANT" | "ADMIN";
   merchant_name?: string | null; // Only for MERCHANT role
 }
 
@@ -52,7 +52,7 @@ export interface Order extends BaseTimestamps {
   merchant_id: string; // UUID, references profiles.id
   amount: number; // Integer amount in cents (e.g., 1099 = $10.99)
   currency: string; // V1 always "usd"
-  status: 'pending' | 'completed' | 'failed';
+  status: "pending" | "completed" | "failed";
   stripe_checkout_session_id?: string | null;
 }
 
@@ -235,28 +235,74 @@ export interface PaginatedResponse<T> {
 }
 
 // =============================================================================
-// EXPORT ALL TYPES
+// DATABASE TYPE EXPORTS FOR SUPABASE CLIENT
 // =============================================================================
 
-export type {
-  Profile,
-  Game,
-  Sku,
-  Order,
-  GameWithSkus,
-  OrderWithDetails,
-  SkuWithGame,
-  MerchantWithAnalytics,
-  CreateGameInput,
-  UpdateGameInput,
-  CreateSkuInput,
-  UpdateSkuInput,
-  CreateOrderInput,
-  MerchantAnalytics,
-  OrderAnalytics,
-  StripeCheckoutSessionInput,
-  StripeCheckoutSessionOutput,
-  StripeWebhookEvent,
-  ApiResponse,
-  PaginatedResponse
+export type Database = {
+  public: {
+    Tables: {
+      profiles: {
+        Row: Profile;
+        Insert: Omit<Profile, "id" | "created_at" | "updated_at"> & {
+          id?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Profile>;
+      };
+      games: {
+        Row: Game;
+        Insert: Omit<Game, "id" | "created_at" | "updated_at"> & {
+          id?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Game>;
+      };
+      skus: {
+        Row: Sku;
+        Insert: Omit<Sku, "id" | "created_at" | "updated_at"> & {
+          id?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Sku>;
+      };
+      orders: {
+        Row: Order;
+        Insert: Omit<Order, "id" | "created_at" | "updated_at"> & {
+          id?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Order>;
+      };
+    };
+    Views: {
+      merchant_analytics: {
+        Row: MerchantAnalytics;
+      };
+    };
+    Functions: {
+      is_admin: {
+        Args: Record<PropertyKey, never>;
+        Returns: boolean;
+      };
+      get_merchant_game_ids: {
+        Args: {
+          p_merchant_id: string;
+        };
+        Returns: {
+          game_id: string;
+        }[];
+      };
+    };
+    Enums: {
+      profiles_role: "USER" | "MERCHANT" | "ADMIN";
+      orders_status: "pending" | "completed" | "failed";
+    };
+    CompositeTypes: {
+      [key: string]: never;
+    };
+  };
 };
