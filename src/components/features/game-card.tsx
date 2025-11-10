@@ -15,7 +15,7 @@ interface GameCardProps {
 }
 
 export function GameCard({ game, locale, translations }: GameCardProps) {
-  const t = useTranslations("common");
+  const t = useTranslations("games");
   // Get the localized game name
   const gameName = game.name[locale as keyof typeof game.name] || game.name.en;
 
@@ -79,7 +79,7 @@ export function GameCard({ game, locale, translations }: GameCardProps) {
               <div className="flex items-center space-x-2">
                 <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
-                  {t("games.noItemsAvailable")}
+                  {t("noItemsAvailable")}
                 </p>
               </div>
             )}

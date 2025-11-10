@@ -85,14 +85,17 @@
     "orderDetails": "Order Details",
     "unableToRetrieveOrderInfo": "Unable to retrieve order information",
     "returnToGames": "Return to Games",
-    "completed": "Completed",
-    "myOrders": "My Orders",
     "viewOrderHistory": "View all your game recharge order history",
     "loadOrdersFailed": "Failed to load orders",
     "noOrdersYet": "No orders yet",
     "noOrdersDescription": "You don't have any orders yet. Check out the game store!",
     "browseGames": "Browse Games",
-    "backToHome": "Back to Home"
+    "backToHome": "Back to Home",
+    "roles": {
+      "player": "Player",
+      "merchant": "Merchant",
+      "admin": "Admin"
+    }
   },
   "nav": {
     "home": "Home",
@@ -342,13 +345,82 @@
     "invalidDataStructureFromServer": "Invalid data structure received from server"
   },
   "merchant": {
+    "dashboard": {
+      "title": "Merchant Dashboard",
+      "subtitle": "Manage your games and track performance",
+      "addGame": "Add Game",
+      "stats": {
+        "totalGames": "Total Games",
+        "totalSKUs": "Total SKUs",
+        "totalOrders": "Total Orders",
+        "totalRevenue": "Total Revenue",
+        "thisMonth": "this month"
+      },
+      "tabs": {
+        "games": "Games",
+        "orders": "Orders",
+        "analytics": "Analytics"
+      },
+      "games": {
+        "title": "Game Management",
+        "description": "Manage your games and SKUs",
+        "skus": "SKUs",
+        "status": {
+          "active": "Active",
+          "inactive": "Inactive"
+        },
+        "revenue": "Revenue",
+        "viewAll": "View All Games"
+      },
+      "orders": {
+        "title": "Recent Orders",
+        "description": "Latest customer orders",
+        "status": {
+          "completed": "Completed",
+          "pending": "Pending"
+        },
+        "viewAll": "View All Orders"
+      },
+      "analytics": {
+        "comingSoon": "Analytics features coming soon",
+        "title": "Analytics",
+        "description": "Track your performance metrics",
+        "noData": "No data available yet"
+      }
+    },
     "title": "Merchant Portal",
     "subtitle": "Manage your games and track performance",
-    "games": "My Games",
+    "games": {
+      "title": "Game Management",
+      "description": "Manage your games and SKUs",
+      "addGame": "Add New Game",
+      "searchPlaceholder": "Search games...",
+      "noGames": "No games found",
+      "noSearchResults": "No games match your search",
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "filter": {
+        "all": "All",
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "skusCount": "SKUs",
+      "ordersCount": "Orders",
+      "revenue": "Revenue",
+      "view": "View",
+      "edit": "Edit",
+      "viewAll": "View All Games"
+    },
     "skus": "SKUs",
-    "analytics": "Analytics",
-    "dashboard": "Dashboard",
-    "createGame": "Create New Game",
+    "analytics": {
+      "title": "Analytics Dashboard",
+      "description": "Track your performance metrics",
+      "comingSoon": "Analytics features coming soon",
+      "noData": "No data available yet"
+    },
+    "createGame": "Create Game",
     "editGame": "Edit Game",
     "createSku": "Create New SKU",
     "editSku": "Edit SKU",
@@ -399,15 +471,9 @@
     "skuDeleted": "SKU deleted successfully",
     "gameNameRequiredBothLanguages": "Game name is required in both English and Chinese",
     "gameCreatedSuccess": "Game created successfully!",
-    "createNewGame": "Create New Game",
     "addNewGameToPortfolio": "Add a new game to your portfolio",
     "backToGames": "Back to Games",
-    "gameName": "Game Name",
-    "englishName": "English Name",
-    "chineseName": "Chinese Name",
     "descriptionOptional": "Description (Optional)",
-    "englishDescription": "English Description",
-    "chineseDescription": "Chinese Description",
     "bannerUrlOptional": "Banner URL (Optional)",
     "enterGameNameEnglish": "Enter game name in English",
     "enterGameNameChinese": "输入游戏中文名称",
@@ -416,12 +482,42 @@
     "enterBannerUrlPlaceholder": "https://example.com/banner.jpg",
     "enterValidBannerUrl": "Enter a valid URL for your game banner image",
     "cancel": "Cancel",
-    "createGame": "Create Game",
     "creating": "Creating...",
     "dashboardDescription": "Overview of your business performance and metrics",
     "todayStats": "Today's Statistics",
     "revenue": "Revenue",
-    "orders": "Orders",
+    "orders": {
+      "title": "Order Management",
+      "description": "View and manage customer orders",
+      "listTitle": "Recent Orders",
+      "listDescription": "Latest customer orders",
+      "searchPlaceholder": "Search orders...",
+      "noOrders": "No orders found",
+      "noSearchResults": "No orders match your search",
+      "status": {
+        "completed": "Completed",
+        "pending": "Pending",
+        "failed": "Failed"
+      },
+      "filter": {
+        "all": "All",
+        "completed": "Completed",
+        "pending": "Pending",
+        "failed": "Failed"
+      },
+      "table": {
+        "orderId": "Order ID",
+        "game": "Game",
+        "sku": "SKU",
+        "customer": "Customer",
+        "amount": "Amount",
+        "status": "Status",
+        "createdAt": "Created",
+        "completedAt": "Completed"
+      },
+      "export": "Export",
+      "viewAll": "View All Orders"
+    },
     "salesPerformance": "Sales Performance",
     "customers": "Customers",
     "orderStatus": "Order Status",
@@ -444,16 +540,16 @@
       "viewAnalyticsDesc": "View detailed performance metrics"
     },
     "stats": {
-      "totalRevenue": "Total Revenue",
+      "totalGames": "Total Games",
+      "totalSKUs": "Total SKUs",
       "totalOrders": "Total Orders",
-      "conversionRate": "Conversion Rate",
-      "totalGames": "Total Games"
+      "totalRevenue": "Total Revenue",
+      "thisMonth": "this month"
     },
     "viewAll": "View All",
     "averageOrderValue": "Average Order Value",
     "lastOrderDate": "Last Order Date",
     "orderHistory": "Order History",
-    "salesPerformance": "Sales Performance",
     "conversionRate": "Conversion Rate",
     "permissionDenied": "Access Denied",
     "permissionDeniedMessage": "You don't have permission to access this resource. Please contact your administrator if you believe this is an error.",
@@ -461,7 +557,12 @@
     "errorOccurred": "An error occurred",
     "userNotAuthenticated": "User not authenticated",
     "userNotMerchantRole": "User does not have merchant role",
-    "validationFailed": "Validation failed"
+    "validationFailed": "Validation failed",
+    "tabs": {
+      "games": "Games",
+      "orders": "Orders",
+      "analytics": "Analytics"
+    }
   },
   "analytics": {
     "totalRevenue": "Total Revenue",
@@ -500,10 +601,38 @@
     "hourlySalesPattern": "Hourly Sales Pattern",
     "hourlySalesDescription": "Sales activity throughout the day (24-hour format)"
   },
-  "roles": {
-    "player": "Player",
-    "merchant": "Merchant",
-    "admin": "Admin"
+  "orders": {
+    "title": "My Orders",
+    "description": "View your purchase history and order details",
+    "export": "Export",
+    "stats": {
+      "totalOrders": "Total Orders",
+      "totalSpent": "Total Spent",
+      "completed": "Completed",
+      "pendingOrders": "Pending Orders",
+      "awaitingPayment": "Awaiting payment",
+      "onGames": "on games"
+    },
+    "searchPlaceholder": "Search by order ID, game or SKU...",
+    "filter": {
+      "all": "All",
+      "completed": "Completed",
+      "pending": "Pending",
+      "failed": "Failed"
+    },
+    "noOrders": "No orders yet",
+    "noSearchResults": "No orders match your search criteria",
+    "status": {
+      "completed": "Completed",
+      "pending": "Pending",
+      "failed": "Failed"
+    },
+    "table": {
+      "orderDate": "Order Date",
+      "completedDate": "Completed Date"
+    },
+    "viewDetails": "View Details",
+    "viewGame": "View Game"
   },
   "validation": {
     "required": "This field is required",

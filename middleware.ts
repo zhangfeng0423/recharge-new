@@ -1,16 +1,15 @@
-import createMiddleware from "next-intl/middleware";
 import { routing } from "./src/i18n/routing";
+import createIntlMiddleware from "next-intl/middleware";
 
-export default createMiddleware(routing);
+// Create internationalization middleware
+const intlMiddleware = createIntlMiddleware(routing);
+
+export default createIntlMiddleware(routing);
 
 export const config = {
-  // 匹配所有路径除了以下开头的路径：
-  // - api (API 路由)
-  // - _next/static (静态文件)
-  // - _next/image (图片优化)
-  // - favicon.ico (favicon)
-  // - public (公共静态资源)
   matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico|public).*)",
+    // Match all pathnames except for
+    // - … if they start with `api`, `_next/static`, `_next/image`, or `favicon.ico`
+    '/((?!api|_next/static|_next/image|favicon.ico).*)',
   ],
 };

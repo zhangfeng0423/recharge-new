@@ -85,14 +85,18 @@
     "orderDetails": "订单详情",
     "unableToRetrieveOrderInfo": "无法检索订单信息",
     "returnToGames": "返回游戏",
-    "completed": "已完成",
     "myOrders": "我的订单",
     "viewOrderHistory": "查看您所有的游戏充值订单历史记录",
     "loadOrdersFailed": "加载订单失败",
     "noOrdersYet": "暂无订单",
     "noOrdersDescription": "您还没有任何订单。去游戏商店看看吧！",
     "browseGames": "浏览游戏",
-    "backToHome": "返回首页"
+    "backToHome": "返回首页",
+    "roles": {
+      "player": "玩家",
+      "merchant": "商家",
+      "admin": "管理员"
+    }
   },
   "nav": {
     "home": "首页",
@@ -349,7 +353,7 @@
     "orders": "订单",
     "analytics": "分析",
     "dashboard": "仪表板",
-    "createGame": "创建新游戏",
+    "createGame": "创建游戏",
     "editGame": "编辑游戏",
     "createSku": "创建新产品",
     "editSku": "编辑产品",
@@ -403,15 +407,9 @@
     "skuDeleted": "产品删除成功",
     "gameNameRequiredBothLanguages": "游戏名称需要英文和中文版本",
     "gameCreatedSuccess": "游戏创建成功！",
-    "createNewGame": "创建新游戏",
     "addNewGameToPortfolio": "向您的产品组合添加新游戏",
     "backToGames": "返回游戏",
-    "gameName": "游戏名称",
-    "englishName": "英文名称",
-    "chineseName": "中文名称",
     "descriptionOptional": "描述（可选）",
-    "englishDescription": "英文描述",
-    "chineseDescription": "中文描述",
     "bannerUrlOptional": "横幅URL（可选）",
     "enterGameNameEnglish": "输入英文名称",
     "enterGameNameChinese": "输入游戏中文名称",
@@ -420,7 +418,6 @@
     "enterBannerUrlPlaceholder": "https://example.com/banner.jpg",
     "enterValidBannerUrl": "输入有效的游戏横幅图片URL",
     "cancel": "取消",
-    "createGame": "创建游戏",
     "creating": "创建中...",
     "dashboardDescription": "您的业务业绩和指标概览",
     "todayStats": "今日统计",
@@ -492,11 +489,6 @@
     "orderStatusDistribution": "订单状态分布",
     "hourlySalesPattern": "每小时销售模式",
     "hourlySalesDescription": "一天中的销售活动（24小时制）"
-  },
-  "roles": {
-    "player": "玩家",
-    "merchant": "商家",
-    "admin": "管理员"
   },
   "validation": {
     "required": "此字段为必填项",

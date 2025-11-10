@@ -8,6 +8,7 @@ import { supabase } from "@/lib/supabaseClient";
 import {
   createSupabaseAdminClient,
   createSupabaseClientForServerActions,
+  createSupabaseServerClientWithCookies,
 } from "@/lib/supabaseServer";
 
 // Create the action client with default error handling
@@ -56,14 +57,21 @@ export interface AuthResult {
   redirectUrl?: string;
 }
 
-// Get current user function for server-side usage
+// Get current user function for server-side usage (Server Components and Server Actions)
 export async function getCurrentUser() {
   try {
-    const supabase = await createSupabaseClientForServerActions();
+    // Use the cookie-based client for both Server Components and Server Actions
+    // This client can read cookies but won't attempt to modify them
+    const supabase = await createSupabaseServerClientWithCookies();
 
     const { data: { user }, error } = await supabase.auth.getUser();
 
     if (error) {
+      // 对于认证会话缺失的错误，静默处理（这是正常的未登录状态）
+      if (error.message?.includes('Auth session missing') || error.message?.includes('Invalid Refresh Token')) {
+        return null;
+      }
+      // 其他认证错误才记录到控制台
       console.error("Error getting current user:", error);
       return null;
     }
