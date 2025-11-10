@@ -1,10 +1,15 @@
+"use client";
+
 import type { ReactNode } from "react";
+import { useTranslations } from "next-intl";
 
 interface PaymentLayoutProps {
   children: ReactNode;
 }
 
 export default function PaymentLayout({ children }: PaymentLayoutProps) {
+  const t = useTranslations("payment");
+  
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
       <div className="container mx-auto px-4 py-8 max-w-4xl">
@@ -12,10 +17,10 @@ export default function PaymentLayout({ children }: PaymentLayoutProps) {
           {/* Header */}
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-white">
             <h1 className="text-2xl font-bold text-center">
-              Game Recharge Platform
+              {t("gameRechargePlatform")}
             </h1>
             <p className="text-center text-blue-100 mt-2">
-              Secure Payment Processing
+              {t("securePaymentProcessing")}
             </p>
           </div>
 
@@ -37,12 +42,12 @@ export default function PaymentLayout({ children }: PaymentLayoutProps) {
                     clipRule="evenodd"
                   />
                 </svg>
-                <span>Secured by SSL Encryption</span>
+                <span>{t("securedBySslEncryption")}</span>
               </div>
               <div className="flex items-center space-x-4">
-                <span>24/7 Customer Support</span>
+                <span>{t("customerSupport247")}</span>
                 <span>•</span>
-                <span>Instant Delivery</span>
+                <span>{t("instantDelivery")}</span>
               </div>
             </div>
           </div>

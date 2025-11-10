@@ -3,7 +3,6 @@ import { createSupabaseClientForServerActions } from "@/lib/supabaseServer";
 
 export async function POST(request: NextRequest) {
   const startTime = Date.now();
-  console.log("🚪 [LOGOUT API] 开始登出流程...");
 
   try {
     // Create a Supabase client for the API route that can handle cookies
@@ -25,7 +24,6 @@ export async function POST(request: NextRequest) {
     }
 
     // 强制清除所有可能的会话数据
-    console.log("🧹 [LOGOUT API] 开始清除服务端会话...");
 
     // 尝试多种登出方法确保彻底清除
     const signOutPromises = [

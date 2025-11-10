@@ -48,7 +48,6 @@ export function UserStatus({ initialUser, locale }: UserStatusProps) {
         if (!mounted) return;
 
         if (session?.user?.email === "user@example.com") {
-          console.log("🚫 Detected test user session, clearing cache...");
           await forceClearAuthCacheClient();
           await supabase.auth.signOut();
           if (mounted) setUser(null);
@@ -64,7 +63,6 @@ export function UserStatus({ initialUser, locale }: UserStatusProps) {
           // Ensure component is still mounted before processing auth events
           if (!mounted) return;
 
-          console.log("Auth state changed:", event, session?.user?.email);
 
           if (event === "SIGNED_IN" && session?.user) {
             // Check if this is the test user that shouldn't be active

@@ -226,7 +226,12 @@
     "currency": "美元",
     "securePayment": "安全支付",
     "processing": "处理中...",
-    "completePurchase": "完成购买"
+    "completePurchase": "完成购买",
+    "gameRechargePlatform": "游戏充值平台",
+    "securePaymentProcessing": "安全支付处理",
+    "securedBySslEncryption": "SSL加密保护",
+    "customerSupport247": "24/7客户支持",
+    "instantDelivery": "即时配送"
   },
   "dashboard": {
     "navigation": {
@@ -332,7 +337,9 @@
     "timeoutError": "请求超时。服务器响应时间过长，请重试。",
     "dataValidationError": "数据验证错误。接收的数据不完整或已损坏。",
     "retryButton": "重试",
-    "detailedErrorMessage": "错误详情：{message}"
+    "detailedErrorMessage": "错误详情：{message}",
+    "failedToLoadAnalyticsData": "加载分析数据失败",
+    "invalidDataStructureFromServer": "从服务器接收到无效的数据结构"
   },
   "merchant": {
     "title": "商家门户",
@@ -394,6 +401,27 @@
     "skuCreated": "产品创建成功",
     "skuUpdated": "产品更新成功",
     "skuDeleted": "产品删除成功",
+    "gameNameRequiredBothLanguages": "游戏名称需要英文和中文版本",
+    "gameCreatedSuccess": "游戏创建成功！",
+    "createNewGame": "创建新游戏",
+    "addNewGameToPortfolio": "向您的产品组合添加新游戏",
+    "backToGames": "返回游戏",
+    "gameName": "游戏名称",
+    "englishName": "英文名称",
+    "chineseName": "中文名称",
+    "descriptionOptional": "描述（可选）",
+    "englishDescription": "英文描述",
+    "chineseDescription": "中文描述",
+    "bannerUrlOptional": "横幅URL（可选）",
+    "enterGameNameEnglish": "输入英文名称",
+    "enterGameNameChinese": "输入游戏中文名称",
+    "describeGameEnglish": "用英文描述您的游戏",
+    "describeGameChinese": "描述您的游戏",
+    "enterBannerUrlPlaceholder": "https://example.com/banner.jpg",
+    "enterValidBannerUrl": "输入有效的游戏横幅图片URL",
+    "cancel": "取消",
+    "createGame": "创建游戏",
+    "creating": "创建中...",
     "dashboardDescription": "您的业务业绩和指标概览",
     "todayStats": "今日统计",
     "revenue": "收入",
@@ -528,7 +556,11 @@
     "setupInstruction1": "将 .env.local.example 复制为 .env.local",
     "setupInstruction2": "从 Supabase 仪表板填写您的 Supabase 项目凭据",
     "setupInstruction3": "确保您已在 Supabase SQL 编辑器中运行数据库迁移",
-    "setupInstruction4": "更新环境变量后重启开发服务器"
+    "setupInstruction4": "更新环境变量后重启开发服务器",
+    "connectedToSupabaseAndFetchedData": "已连接到 Supabase 并获取数据。",
+    "connectedToSupabaseNoDataFound": "已连接到 Supabase，未找到数据。",
+    "table": "表",
+    "never": "从未"
   },
   "logs": {
     "auth": {

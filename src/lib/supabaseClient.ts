@@ -51,7 +51,6 @@ let clientInstance: SupabaseClient<Database> | null = null;
 export function getSupabaseBrowserClient(): SupabaseClient<Database> {
   if (!clientInstance) {
     clientInstance = createSupabaseBrowserClient();
-    console.log("🔗 [Supabase] Created singleton browser client instance");
   }
   return clientInstance;
 }
@@ -67,7 +66,6 @@ export const supabase = getSupabaseBrowserClient();
  */
 export function resetSupabaseBrowserClient(): void {
   if (clientInstance) {
-    console.log("🔄 [Supabase] Resetting singleton browser client instance");
     clientInstance = null;
   }
 }

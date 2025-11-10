@@ -191,16 +191,10 @@ export async function createSupabaseServerClientWithCookies() {
           set(name: string, value: string, options: any) {
             // 静默忽略Cookie设置操作，避免在服务器组件中设置Cookie
             // Cookie设置应该通过Server Actions或API Routes处理
-            console.debug(
-              `Cookie设置操作被忽略: ${name} (服务器组件中不允许设置Cookie)`,
-            );
           },
           remove(name: string, options: any) {
             // 静默忽略Cookie删除操作，避免在服务器组件中删除Cookie
             // Cookie删除应该通过Server Actions或API Routes处理
-            console.debug(
-              `Cookie删除操作被忽略: ${name} (服务器组件中不允许删除Cookie)`,
-            );
           },
         },
         global: {

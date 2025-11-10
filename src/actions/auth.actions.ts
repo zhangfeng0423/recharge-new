@@ -594,7 +594,6 @@ async function attemptBrowserClientFallback(serverUser: any): Promise<any> {
     const { data: sessionData } = await browserClient.auth.getSession();
 
     if (sessionData.session?.user) {
-      console.log("Found user in browser client session");
       return await fetchUserProfile(
         sessionData.session.user,
         "browser_client_session",

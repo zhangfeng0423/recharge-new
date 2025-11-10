@@ -48,13 +48,13 @@ export default function TestConnectionPage() {
       } else if (data) {
         setStatus({
           status: "Success",
-          message: "Connected to Supabase and fetched data.",
+          message: t("connectedToSupabaseAndFetchedData"),
           timestamp: new Date().toISOString(),
         });
       } else {
         setStatus({
           status: "Success",
-          message: "Connected to Supabase, no data found.",
+          message: t("connectedToSupabaseNoDataFound"),
           timestamp: new Date().toISOString(),
         });
       }
@@ -260,7 +260,7 @@ export default function TestConnectionPage() {
               <code className="bg-blue-100 px-1 rounded">
                 .env.local.example
               </code>{" "}
-              {t("to")}{" "}
+              {t("common.to")}{" "}
               <code className="bg-blue-100 px-1 rounded">.env.local</code>
             </li>
             <li>{t("setupInstruction2")}</li>

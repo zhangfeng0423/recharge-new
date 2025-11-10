@@ -1,30 +1,47 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Card } from "@/components/ui/Card";
 
 interface MerchantDashboardErrorProps {
-  error: {
-    type: string;
-    message: string;
-  };
+  error: string;
+  onRetry?: () => void;
 }
 
-export function MerchantDashboardError({ error }: MerchantDashboardErrorProps) {
-  const t = useTranslations("merchant");
+export function MerchantDashboardError({
+  error,
+  onRetry,
+}: MerchantDashboardErrorProps) {
+  const t = useTranslations("common");
 
   return (
-    <div className="col-span-full">
-      <Card className="p-6 bg-red-50 border-red-200">
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <h3 className="text-red-800 font-medium text-lg">
-              {t("errorOccurred")}
-            </h3>
-            <p className="text-red-600 text-sm mt-2">{error.message}</p>
-          </div>
-        </div>
-      </Card>
+    <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
+      <div className="text-red-600 mb-4">
+        <svg
+          className="mx-auto h-12 w-12"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+      </div>
+      <h3 className="text-lg font-medium text-red-800 mb-2">
+        Dashboard Error
+      </h3>
+      <p className="text-red-600 mb-4">{error}</p>
+      {onRetry && (
+        <button
+          onClick={onRetry}
+          className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors"
+        >
+          {t("retry")}
+        </button>
+      )}
     </div>
   );
 }

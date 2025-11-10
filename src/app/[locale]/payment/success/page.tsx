@@ -34,19 +34,17 @@ export default async function PaymentSuccessPage({
 
   // Handle order fetch errors
   if (
-    orderResult.serverError ||
     !orderResult.data?.success ||
-    !orderResult.data?.order
+    !orderResult.data?.data
   ) {
     return (
       <div className="max-w-md mx-auto">
         <Alert variant="destructive" className="mb-6">
           <p className="text-center">
             {(
-              orderResult.serverError ||
-              orderResult.data?.error ||
+              orderResult.data?.message ||
               t("unableToRetrieveOrderInfo")
-            )?.toString()}
+            )}
           </p>
         </Alert>
         <div className="text-center">
@@ -61,7 +59,7 @@ export default async function PaymentSuccessPage({
     );
   }
 
-  const { order } = orderResult.data || {};
+  const order = (orderResult.data as any)?.success ? (orderResult.data as any).data : null;
 
   return (
     <div className="max-w-2xl mx-auto">

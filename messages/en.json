@@ -225,7 +225,12 @@
     "currency": "USD",
     "securePayment": "Secure Payment",
     "processing": "Processing...",
-    "completePurchase": "Complete Purchase"
+    "completePurchase": "Complete Purchase",
+    "gameRechargePlatform": "Game Recharge Platform",
+    "securePaymentProcessing": "Secure Payment Processing",
+    "securedBySslEncryption": "Secured by SSL Encryption",
+    "customerSupport247": "24/7 Customer Support",
+    "instantDelivery": "Instant Delivery"
   },
   "dashboard": {
     "navigation": {
@@ -392,6 +397,27 @@
     "skuCreated": "SKU created successfully",
     "skuUpdated": "SKU updated successfully",
     "skuDeleted": "SKU deleted successfully",
+    "gameNameRequiredBothLanguages": "Game name is required in both English and Chinese",
+    "gameCreatedSuccess": "Game created successfully!",
+    "createNewGame": "Create New Game",
+    "addNewGameToPortfolio": "Add a new game to your portfolio",
+    "backToGames": "Back to Games",
+    "gameName": "Game Name",
+    "englishName": "English Name",
+    "chineseName": "Chinese Name",
+    "descriptionOptional": "Description (Optional)",
+    "englishDescription": "English Description",
+    "chineseDescription": "Chinese Description",
+    "bannerUrlOptional": "Banner URL (Optional)",
+    "enterGameNameEnglish": "Enter game name in English",
+    "enterGameNameChinese": "输入游戏中文名称",
+    "describeGameEnglish": "Describe your game in English",
+    "describeGameChinese": "描述您的游戏",
+    "enterBannerUrlPlaceholder": "https://example.com/banner.jpg",
+    "enterValidBannerUrl": "Enter a valid URL for your game banner image",
+    "cancel": "Cancel",
+    "createGame": "Create Game",
+    "creating": "Creating...",
     "dashboardDescription": "Overview of your business performance and metrics",
     "todayStats": "Today's Statistics",
     "revenue": "Revenue",
@@ -537,7 +563,11 @@
     "setupInstruction1": "Copy .env.local.example to .env.local",
     "setupInstruction2": "Fill in your Supabase project credentials from the Supabase Dashboard",
     "setupInstruction3": "Ensure you have run the database migration in Supabase SQL Editor",
-    "setupInstruction4": "Restart your development server after updating environment variables"
+    "setupInstruction4": "Restart your development server after updating environment variables",
+    "connectedToSupabaseAndFetchedData": "Connected to Supabase and fetched data.",
+    "connectedToSupabaseNoDataFound": "Connected to Supabase, no data found.",
+    "table": "Table",
+    "never": "Never"
   },
   "logs": {
     "auth": {
