@@ -14,7 +14,7 @@ if (!process.env.STRIPE_SECRET_KEY) {
 }
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: "2025-10-29.clover",
+  apiVersion: "2024-06-20" as any,
   typescript: true,
   telemetry: false, // Disable Stripe telemetry for better privacy
 });
@@ -96,9 +96,11 @@ export const createCheckoutSession = actionClient
       locale: parsedInput.locale,
     });
 
+    let user: any = null;
+    
     try {
       // Use the same authentication method as login functionality
-      const user = await getCurrentUser();
+      user = await getCurrentUser();
 
       // Create supabase client after user authentication check
       const supabase: SupabaseClient<Database> = createSupabaseServerClient();
@@ -297,10 +299,24 @@ export const createCheckoutSession = actionClient
       const errorMessage =
         error instanceof Error ? error.message : "Unknown error occurred";
 
+      // Enhanced error logging for debugging
+      console.error("=== PAYMENT ERROR DETAILS ===");
+      console.error("Error:", error);
+      console.error("Error Message:", errorMessage);
+      console.error("Error Stack:", error instanceof Error ? error.stack : "No stack trace");
+      console.error("SKU ID:", parsedInput.skuId);
+      console.error("User ID:", user?.id || "No user");
+      console.error("Duration:", `${duration}ms`);
+      console.error("Stripe API Version:", "2024-06-20");
+      console.error("==============================");
+
       logPaymentEvent("error", "Checkout session creation failed", {
         skuId: parsedInput.skuId,
         error: errorMessage,
         duration: `${duration}ms`,
+        errorDetails: error,
+        userId: user?.id,
+        stripeApiVersion: "2024-06-20",
       });
 
       // Attempt to update any created order to 'failed' status
@@ -315,7 +331,7 @@ export const createCheckoutSession = actionClient
 
       return {
         success: false,
-        message: "Unable to process payment. Please try again later.",
+        message: `Payment processing failed: ${errorMessage}`,
       };
     }
   });

@@ -560,7 +560,8 @@
     "connectedToSupabaseAndFetchedData": "已连接到 Supabase 并获取数据。",
     "connectedToSupabaseNoDataFound": "已连接到 Supabase，未找到数据。",
     "table": "表",
-    "never": "从未"
+    "never": "从未",
+    "failedToTestTable": "测试表失败"
   },
   "logs": {
     "auth": {

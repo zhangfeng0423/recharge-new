@@ -3,6 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import React, { useEffect, useState } from "react";
+import { useAction } from "next-safe-action/hooks";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import {
@@ -15,7 +16,7 @@ import {
 import { GoogleButton } from "@/components/ui/GoogleButton";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
-import { createSupabaseBrowserClient } from "@/lib/supabaseClient";
+import { loginAction, registerAction } from "@/actions/auth.actions";
 
 export default function AuthPage() {
   const t = useTranslations();
@@ -24,32 +25,16 @@ export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
   const [selectedRole, setSelectedRole] = useState<"USER" | "MERCHANT">("USER");
 
-  // Form states
-  const [loginState, setLoginState] = useState({
-    success: false,
-    message: "",
-    pending: false,
-  });
-
-  const [registerState, setRegisterState] = useState({
-    success: false,
-    message: "",
-    pending: false,
-  });
+  // Form states using useAction
+  const loginActionState = useAction(loginAction);
+  const registerActionState = useAction(registerAction);
 
   const [googleAuthState, setGoogleAuthState] = useState({
     error: "",
     success: false,
   });
 
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    confirmPassword: "",
-    role: "USER" as "USER" | "MERCHANT",
-    merchantName: "",
-  });
-
+  
   // Handle URL parameters for OAuth callbacks
   useEffect(() => {
     const error = searchParams.get("error");
@@ -76,18 +61,18 @@ export default function AuthPage() {
 
   // Handle successful authentication
   React.useEffect(() => {
-    if (loginState.success) {
+    if (loginActionState?.hasSucceeded && loginActionState?.result?.data?.success) {
       router.push("/");
       router.refresh();
     }
-  }, [loginState.success, router]);
+  }, [loginActionState?.hasSucceeded, loginActionState?.result?.data?.success, router]);
 
   React.useEffect(() => {
-    if (registerState.success) {
+    if (registerActionState?.hasSucceeded && registerActionState?.result?.data?.success) {
       router.push("/");
       router.refresh();
     }
-  }, [registerState.success, router]);
+  }, [registerActionState?.hasSucceeded, registerActionState?.result?.data?.success, router]);
 
   // Handle Google auth success
   useEffect(() => {
@@ -97,104 +82,28 @@ export default function AuthPage() {
     }
   }, [googleAuthState.success]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+  
+  const handleLogin = async (formData: FormData) => {
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+
+    await loginActionState.execute({ email, password });
   };
 
-  const handleRoleChange = (role: "USER" | "MERCHANT") => {
-    setSelectedRole(role);
-    setFormData((prev) => ({
-      ...prev,
+  const handleRegister = async (formData: FormData) => {
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+    const confirmPassword = formData.get("confirmPassword") as string;
+    const role = formData.get("role") as "USER" | "MERCHANT";
+    const merchantName = formData.get("merchantName") as string;
+
+    await registerActionState.execute({
+      email,
+      password,
+      confirmPassword,
       role,
-    }));
-  };
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoginState((prev) => ({ ...prev, pending: true, message: "" }));
-
-    try {
-      // Use server action for login to ensure proper session handling
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password,
-        }),
-      });
-
-      const result = await response.json();
-
-      if (response.ok && result.success) {
-        setLoginState({
-          success: true,
-          message: result.message || "Login successful",
-          pending: false,
-        });
-      } else {
-        setLoginState({
-          success: false,
-          message: result.message || t("auth.loginError"),
-          pending: false,
-        });
-      }
-    } catch (_error) {
-      setLoginState({
-        success: false,
-        message: t("common.error"),
-        pending: false,
-      });
-    }
-  };
-
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setRegisterState((prev) => ({ ...prev, pending: true, message: "" }));
-
-    try {
-      const response = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password,
-          confirmPassword: formData.confirmPassword,
-          role: formData.role,
-          merchantName: formData.merchantName,
-        }),
-      });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        setRegisterState({
-          success: true,
-          message: result.message,
-          pending: false,
-        });
-      } else {
-        setRegisterState({
-          success: false,
-          message: result.message || t("auth.registerError"),
-          pending: false,
-        });
-      }
-    } catch (_error) {
-      setRegisterState({
-        success: false,
-        message: t("common.error"), // Using common error translation
-        pending: false,
-      });
-    }
+      merchantName: role === "MERCHANT" ? merchantName : undefined
+    });
   };
 
   return (
@@ -218,34 +127,33 @@ export default function AuthPage() {
                 variant="outline"
                 onClick={() => setIsLogin(!isLogin)}
                 className="text-sm"
-                disabled={loginState.pending || registerState.pending}
               >
                 {isLogin ? t("auth.register") : t("auth.login")}
               </Button>
             </div>
 
             {/* Error/Success Messages */}
-            {loginState.message && (
+            {loginActionState?.result?.data?.message && (
               <Alert
-                variant={loginState.success ? "success" : "destructive"}
+                variant={loginActionState?.result?.data?.success ? "success" : "destructive"}
                 className="mb-4"
               >
-                <AlertDescription>{loginState.message}</AlertDescription>
+                <AlertDescription>{loginActionState.result.data.message}</AlertDescription>
               </Alert>
             )}
 
-            {registerState.message && (
+            {registerActionState?.result?.data?.message && (
               <Alert
-                variant={registerState.success ? "success" : "destructive"}
+                variant={registerActionState?.result?.data?.success ? "success" : "destructive"}
                 className="mb-4"
               >
-                <AlertDescription>{registerState.message}</AlertDescription>
+                <AlertDescription>{registerActionState.result.data.message}</AlertDescription>
               </Alert>
             )}
 
             {/* Login Form */}
             {isLogin ? (
-              <form onSubmit={handleLogin} className="space-y-4">
+              <form action={handleLogin} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="login-email">{t("auth.email")}</Label>
                   <Input
@@ -253,10 +161,7 @@ export default function AuthPage() {
                     name="email"
                     type="email"
                     placeholder={t("auth.email")}
-                    value={formData.email}
-                    onChange={handleInputChange}
                     required
-                    disabled={loginState.pending}
                   />
                 </div>
 
@@ -267,24 +172,20 @@ export default function AuthPage() {
                     name="password"
                     type="password"
                     placeholder={t("auth.password")}
-                    value={formData.password}
-                    onChange={handleInputChange}
                     required
-                    disabled={loginState.pending}
                   />
                 </div>
 
                 <Button
                   type="submit"
                   className="w-full"
-                  disabled={loginState.pending}
                 >
-                  {loginState.pending ? t("common.loading") : t("auth.login")}
+                  {t("auth.login")}
                 </Button>
               </form>
             ) : (
               /* Register Form */
-              <form onSubmit={handleRegister} className="space-y-4">
+              <form action={handleRegister} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="register-email">{t("auth.email")}</Label>
                   <Input
@@ -292,10 +193,7 @@ export default function AuthPage() {
                     name="email"
                     type="email"
                     placeholder={t("auth.email")}
-                    value={formData.email}
-                    onChange={handleInputChange}
                     required
-                    disabled={registerState.pending}
                   />
                 </div>
 
@@ -308,10 +206,7 @@ export default function AuthPage() {
                     name="password"
                     type="password"
                     placeholder={t("auth.password")}
-                    value={formData.password}
-                    onChange={handleInputChange}
                     required
-                    disabled={registerState.pending}
                     minLength={8}
                   />
                 </div>
@@ -325,10 +220,7 @@ export default function AuthPage() {
                     name="confirmPassword"
                     type="password"
                     placeholder={t("auth.confirmPassword")}
-                    value={formData.confirmPassword}
-                    onChange={handleInputChange}
                     required
-                    disabled={registerState.pending}
                     minLength={8}
                   />
                 </div>
@@ -343,9 +235,7 @@ export default function AuthPage() {
                         id="role-user"
                         name="role"
                         value="USER"
-                        checked={selectedRole === "USER"}
-                        onChange={() => handleRoleChange("USER")}
-                        disabled={registerState.pending}
+                        defaultChecked={selectedRole === "USER"}
                         className="w-4 h-4 text-blue-600"
                       />
                       <Label htmlFor="role-user" className="text-sm">
@@ -358,9 +248,7 @@ export default function AuthPage() {
                         id="role-merchant"
                         name="role"
                         value="MERCHANT"
-                        checked={selectedRole === "MERCHANT"}
-                        onChange={() => handleRoleChange("MERCHANT")}
-                        disabled={registerState.pending}
+                        defaultChecked={selectedRole === "MERCHANT"}
                         className="w-4 h-4 text-blue-600"
                       />
                       <Label htmlFor="role-merchant" className="text-sm">
@@ -381,10 +269,7 @@ export default function AuthPage() {
                       name="merchantName"
                       type="text"
                       placeholder={t("auth.merchantNamePlaceholder")}
-                      value={formData.merchantName}
-                      onChange={handleInputChange}
                       required={selectedRole === "MERCHANT"}
-                      disabled={registerState.pending}
                     />
                   </div>
                 )}
@@ -392,11 +277,8 @@ export default function AuthPage() {
                 <Button
                   type="submit"
                   className="w-full"
-                  disabled={registerState.pending}
                 >
-                  {registerState.pending
-                    ? t("common.loading")
-                    : t("auth.register")}
+                  {t("auth.register")}
                 </Button>
               </form>
             )}

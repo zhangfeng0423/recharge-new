@@ -85,53 +85,53 @@ If any validation task fails, **STOP** the workflow and report the failure.
 ### 🧩 Module 2 (Accounts)
 #### Part 1: Database & RLS
 - **Task:** Generate SQL schema for `profiles`, `games`, `skus`, `orders`.
-- **Acquire skill:** `database_architect`
+- **Acquire skill:** `database-architect`
 - **Task:** Generate the RLS policies for all tables.
-- **Acquire skill:** `database_architect`
+- **Acquire skill:** `database-architect`
 - **Task:** **VALIDATE** RLS policies. Generate and run `rls.test.ts`. STOP if fails.
-- **Acquire skill:** `testing_specialist`
+- **Acquire skill:** `testing-pecialist`
 
 #### Part 2: Auth UI & Logic
 - **Task:** Build `app/[locale]/auth/page.tsx` and `auth.actions.ts` (Login/Register).
-- **Acquire skill:** `frontend_developer`
+- **Acquire skill:** `frontend-developer`
 - **Task:** **VALIDATE** the `auth.actions.ts` Server Actions with unit tests. STOP if tests fail.
-- **Acquire skill:** `testing_specialist`
+- **Acquire skill:** `testing-specialist`
 
 ### 🛒 Module 1 & 3 (Platform & Purchase)
 - **Task:** Build the Homepage and Game Details page as RSCs.
-- **Acquire skill:** `frontend_developer`
+- **Acquire skill:** `frontend-developer`
 - **Task:** Build `payment.actions.ts` and Stripe Webhook Handler.
-- **Acquire skill:** `payment_integration`
+- **Acquire skill:** `payment-integration`
 - **Task:** **VALIDATE** purchase flow and webhook idempotency. STOP if validation fails.
-- **Acquire skill:** `testing_specialist`
+- **Acquire skill:** `testing-specialist`
 
 ### 📊 Module 4 & 5 (Portals) — CQS Order
 #### Step 5.1 (Write - "Commands")
 - **Task:** Build the CRUD forms and Server Actions for Admins and Merchants.
-- **Acquire skill:** `frontend_developer`
+- **Acquire skill:** `frontend-developer`
 
 #### Step 5.2 (Validate - "Commands")
 - **Task:** **VALIDATE** all Admin/Merchant Server Actions with tests. STOP if fails.
-- **Acquire skill:** `testing_specialist`
+- **Acquire skill:** `testing-specialist`
 
 #### Step 5.3 (Read - "Queries")
 - **Task:** Generate the SQL RPC function for Merchant Dashboard analytics.
-- **Acquire skill:** `database_architect`
+- **Acquire skill:** `database-architect`
 - **Task:** Build the RSC Dashboard Pages to display data and analytics.
-- **Acquire skill:** `frontend_developer`
+- **Acquire skill:** `frontend-developer`
 
 #### Step 5.4 (Validate - "Queries")
 - **Task:** **VALIDATE** the RPC function and Dashboards. STOP if fails.
-- **Acquire skill:** `testing_specialist`
+- **Acquire skill:** `testing-specialist`
 
 ### 🧾 Finalization Phase
 #### Step 6.1 (End-to-End Validation)
 - **Task:** Run Playwright E2E tests for "Player Purchase" and "Merchant Login" flows.
-- **Acquire skill:** `testing_specialist`
+- **Acquire skill:** `testing-specialist`
 
 #### Step 6.2 (Documentation)
 - **Task:** Generate the final `README.md` summarizing architecture and decisions.
-- **Acquire skill:** `docs_architect`
+- **Acquire skill:** `docs-architect`
 
 #### Step 6.3 (Self-Improvement)
 - **Task:** Review this file (`claude.md`) for any critical deviations or learnings during development. **Explicitly update this file with any validated architectural decisions or pitfalls to avoid.**
@@ -143,9 +143,9 @@ If any validation task fails, **STOP** the workflow and report the failure.
 
 | Skill Name | Description (Focus for Triggering) | Core Deliverables |
 | :--- | :--- | :--- |
-| **`database_architect`** | Designs and implements database schemas (SQL DDL), **Row Level Security (RLS) policies**, and **SQL RPC functions** for Supabase. | **SQL DDL, RLS policies, SQL RPC functions.** |
-| **`backend_security_coder`** | Focuses on **application-layer** security: Zod validation in Server Actions, authentication logic, and webhook idempotency. | Zod validation schemas, Auth/Admin Server Actions. |
-| **`frontend_developer`** | Builds Next.js RSC pages, Zustand stores, and Radix/Tailwind UI components. | Pages in `src/app/`, Tailwind/Radix components. |
-| **`payment_integration`** | Manages Stripe integration, including Checkout Sessions and webhook handlers. | `payment.actions.ts`, Webhook Handler. |
-| **`testing_specialist`** | Sets up testing environments; generates and runs unit, component, and E2E tests. | Test configurations, test scripts (`*.test.ts`). |
-| **`docs_architect`** | Focuses on project documentation, README generation, and architecture summarization. | Final `README.md`, Design notes. |
+| **`database-architect`** | Designs and implements database schemas (SQL DDL), **Row Level Security (RLS) policies**, and **SQL RPC functions** for Supabase. | **SQL DDL, RLS policies, SQL RPC functions.** |
+| **`backend-security_coder`** | Focuses on **application-layer** security: Zod validation in Server Actions, authentication logic, and webhook idempotency. | Zod validation schemas, Auth/Admin Server Actions. |
+| **`frontend-developer`** | Builds Next.js RSC pages, Zustand stores, and Radix/Tailwind UI components. | Pages in `src/app/`, Tailwind/Radix components. |
+| **`payment-integration`** | Manages Stripe integration, including Checkout Sessions and webhook handlers. | `payment.actions.ts`, Webhook Handler. |
+| **`testing-specialist`** | Sets up testing environments; generates and runs unit, component, and E2E tests. | Test configurations, test scripts (`*.test.ts`). |
+| **`docs-architect`** | Focuses on project documentation, README generation, and architecture summarization. | Final `README.md`, Design notes. |

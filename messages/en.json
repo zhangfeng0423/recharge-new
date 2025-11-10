@@ -567,7 +567,8 @@
     "connectedToSupabaseAndFetchedData": "Connected to Supabase and fetched data.",
     "connectedToSupabaseNoDataFound": "Connected to Supabase, no data found.",
     "table": "Table",
-    "never": "Never"
+    "never": "Never",
+    "failedToTestTable": "Failed to test table"
   },
   "logs": {
     "auth": {

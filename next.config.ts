@@ -17,6 +17,7 @@ const nextConfig: NextConfig = {
   // Reduce hydration errors in development
   experimental: {
     optimizeCss: false,
+    mcpServer: true, // 启用内置的 MCP 服务器
   },
   // Suppress React hydration warnings in development
   webpack: (config, { dev }) => {

@@ -13,7 +13,7 @@ if (!stripeSecretKey || !webhookSecret) {
 }
 
 const stripe = new Stripe(stripeSecretKey, {
-  apiVersion: "2025-10-29.clover",
+  apiVersion: "2024-06-20" as any,
   typescript: true,
   telemetry: false, // Disable Stripe telemetry for better privacy
 });
