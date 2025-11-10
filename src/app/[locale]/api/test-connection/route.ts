@@ -11,7 +11,7 @@ import {
   getSupabaseServerClient,
 } from "@/lib/supabaseServer";
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     // Check if environment variables are configured
     const envCheck = {
@@ -88,8 +88,6 @@ export async function GET(request: NextRequest) {
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
-    console.error("❌ Database connection test failed:", error);
-
     return NextResponse.json(
       {
         status: "error",

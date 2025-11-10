@@ -7,6 +7,6 @@ export const routing = defineRouting({
   // 默认语言
   defaultLocale: "en",
 
-  // 路径配置：默认语言不显示前缀（as-needed 策略）
-  localePrefix: "as-needed",
+  // 路径配置：所有URL都包含语言前缀（always 策略）
+  localePrefix: "always",
 });

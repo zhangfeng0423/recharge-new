@@ -2,22 +2,27 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { SkuCard } from "@/components/features/sku-card";
 import { SkuDetailModal } from "@/components/features/sku-detail-modal";
-import { Button } from "@/components/ui/Button";
 import type { GameWithSkus, Sku } from "@/lib/supabase-types";
 import { useSkuModalStore } from "@/stores/useSkuModalStore";
 
 interface GameDetailClientProps {
   game: GameWithSkus;
   locale: string;
-  gameId: string;
+  skuCardTranslations: {
+    popular: string;
+    rechargeButton: string;
+  };
 }
 
 export function GameDetailClient({
   game,
   locale,
-  gameId,
+  skuCardTranslations,
 }: GameDetailClientProps) {
+  const t = useTranslations("common");
   const { openModal } = useSkuModalStore();
 
   const handleViewDetails = (sku: Sku) => {
@@ -45,7 +50,7 @@ export function GameDetailClient({
                   className="text-gray-600 hover:text-gray-900 flex items-center space-x-1"
                 >
                   <span>←</span>
-                  <span>Back</span>
+                  <span>{t("back")}</span>
                 </Link>
                 <h1 className="text-xl font-semibold text-gray-900">
                   {gameName}
@@ -57,10 +62,10 @@ export function GameDetailClient({
                 {/* Language Toggle */}
                 <div className="flex items-center space-x-2 text-sm">
                   <Link
-                    href={`/en/games/${gameId}`}
+                    href={`/en/games/${game.id}`}
                     className={`px-2 py-1 rounded ${
                       locale === "en"
-                        ? "bg-blue-100 text-blue-700"
+                        ? "bg-[#359EFF]/20 text-[#359EFF]"
                         : "text-gray-600 hover:text-gray-900"
                     }`}
                   >
@@ -68,10 +73,10 @@ export function GameDetailClient({
                   </Link>
                   <span className="text-gray-400">/</span>
                   <Link
-                    href={`/zh/games/${gameId}`}
+                    href={`/zh/games/${game.id}`}
                     className={`px-2 py-1 rounded ${
                       locale === "zh"
-                        ? "bg-blue-100 text-blue-700"
+                        ? "bg-[#359EFF]/20 text-[#359EFF]"
                         : "text-gray-600 hover:text-gray-900"
                     }`}
                   >
@@ -80,16 +85,16 @@ export function GameDetailClient({
                 </div>
 
                 {/* User */}
-                <div className="text-sm text-blue-600 font-medium">Alex</div>
+                <div className="text-sm text-[#359EFF] font-medium"></div>
               </div>
             </div>
           </div>
         </header>
 
-        <div className="container mx-auto px-4 py-8">
-          {/* Large Game Banner */}
+        <div className="container mx-auto px-4 py-8 max-w-6xl">
+          {/* Large Game Banner at top */}
           <div className="mb-8">
-            <div className="relative aspect-[16/9] w-full bg-gray-100 rounded-lg overflow-hidden">
+            <div className="relative w-full h-64 md:h-96 bg-gray-100 rounded-lg overflow-hidden">
               {game.banner_url ? (
                 <Image
                   src={game.banner_url}
@@ -97,6 +102,7 @@ export function GameDetailClient({
                   fill
                   className="object-cover"
                   priority
+                  loading="eager"
                   sizes="100vw"
                 />
               ) : (
@@ -109,7 +115,7 @@ export function GameDetailClient({
             </div>
           </div>
 
-          {/* Game Description */}
+          {/* Game Description and separator */}
           {gameDescription && (
             <div className="mb-8">
               <p className="text-lg text-gray-700 max-w-4xl">
@@ -120,61 +126,22 @@ export function GameDetailClient({
           )}
 
           {/* SKU Selection Section */}
-          <div className="mb-8">
+          <div>
             <h2 className="text-2xl font-bold text-gray-900 mb-8">
-              【Select Your Item】
+              {t("selectYourItem")}
             </h2>
 
             {/* SKU Cards Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl">
-              {game.skus?.map((sku) => {
-                const skuName =
-                  sku.name[locale as keyof typeof sku.name] || sku.name.en;
-                const priceInCents = sku.prices?.usd || 0;
-
-                return (
-                  <div
-                    key={sku.id}
-                    className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow duration-200 flex flex-col"
-                  >
-                    {/* SKU Image */}
-                    <div className="relative aspect-square bg-gray-100">
-                      {sku.image_url ? (
-                        <Image
-                          src={sku.image_url}
-                          alt={skuName}
-                          fill
-                          className="object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-green-500 to-blue-600 flex items-center justify-center">
-                          <span className="text-white text-4xl font-bold">
-                            💎
-                          </span>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* SKU Info */}
-                    <div className="p-6 text-center flex flex-col flex-grow">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                        {skuName}
-                      </h3>
-                      <p className="text-xl font-bold text-blue-600 mb-4">
-                        ${(priceInCents / 100).toFixed(2)} USD
-                      </p>
-                      <div className="mt-auto">
-                        <Button
-                          className="w-full"
-                          onClick={() => handleViewDetails(sku)}
-                        >
-                          View Details
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {game.skus?.map((sku) => (
+                <SkuCard
+                  key={sku.id}
+                  sku={sku}
+                  locale={locale}
+                  onViewDetails={handleViewDetails}
+                  translations={skuCardTranslations}
+                />
+              ))}
             </div>
           </div>
         </div>

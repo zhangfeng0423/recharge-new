@@ -8,7 +8,10 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { createSupabaseBrowserClient } from "@/lib/supabaseClient";
+
+const supabase = createSupabaseBrowserClient();
 
 interface ConnectionStatus {
   status: string;
@@ -32,27 +35,43 @@ export default function TestConnectionPage() {
   const [loading, setLoading] = useState(true);
   const [testingTable, setTestingTable] = useState<string>("");
 
-  useEffect(() => {
-    testConnection();
-  }, []);
-
   const testConnection = async () => {
     setLoading(true);
     try {
-      const response = await fetch("/api/test-connection");
-      const data = await response.json();
-      setStatus(data);
-    } catch (error) {
+      const { data, error } = await supabase.from("games").select("*").limit(1);
+      if (error) {
+        setStatus({
+          status: "Failed",
+          message: error.message,
+          timestamp: new Date().toISOString(),
+        });
+      } else if (data) {
+        setStatus({
+          status: "Success",
+          message: "Connected to Supabase and fetched data.",
+          timestamp: new Date().toISOString(),
+        });
+      } else {
+        setStatus({
+          status: "Success",
+          message: "Connected to Supabase, no data found.",
+          timestamp: new Date().toISOString(),
+        });
+      }
+    } catch (error: any) {
       setStatus({
-        status: "error",
-        message: t("genericError"), // Using a generic error translation
-        error: error instanceof Error ? error.message : "Unknown error",
+        status: "Error",
+        message: error.message,
         timestamp: new Date().toISOString(),
       });
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    testConnection();
+  }, [testConnection]);
 
   const testTable = async (tableName: string) => {
     setTestingTable(tableName);

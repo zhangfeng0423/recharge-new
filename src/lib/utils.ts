@@ -120,3 +120,14 @@ export function debounce<T extends (...args: any[]) => any>(
     timeout = setTimeout(() => func(...args), wait);
   };
 }
+
+// Helper function to format amount for display
+export function formatAmount(amount: number, currency: string): string {
+  if (currency.toLowerCase() === "usd") {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+    }).format(amount / 100);
+  }
+  return `${amount} ${currency.toUpperCase()}`;
+}

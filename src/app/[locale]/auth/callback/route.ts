@@ -1,7 +1,9 @@
-import { createClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { createSupabaseServerClient } from "@/lib/supabaseServer";
+import {
+  createSupabaseClientForServerActions,
+  createSupabaseServerClient,
+} from "@/lib/supabaseServer";
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
@@ -9,33 +11,12 @@ export async function GET(request: Request) {
   const next = searchParams.get("next") ?? "/dashboard";
 
   if (code) {
-    // Create a Supabase client for the callback
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        auth: {
-          autoRefreshToken: true,
-          persistSession: true,
-        },
-        cookies: {
-          get(name) {
-            return cookies().get(name)?.value;
-          },
-          set(name, value, options) {
-            cookies().set(name, value, { ...options, httpOnly: true });
-          },
-          remove(name, options) {
-            cookies().delete(name);
-          },
-        },
-      },
-    );
+    // Create a Supabase client for the callback that can set cookies
+    const supabase = await createSupabaseClientForServerActions();
 
     const { error, data } = await supabase.auth.exchangeCodeForSession(code);
 
     if (error) {
-      console.error("OAuth callback error:", error);
       return NextResponse.redirect(
         `${origin}/auth?error=${encodeURIComponent(error.message)}`,
       );
@@ -63,7 +44,6 @@ export async function GET(request: Request) {
           .insert(profileData);
 
         if (createError) {
-          console.error("Profile creation error:", createError);
           return NextResponse.redirect(
             `${origin}/auth?error=Failed to create user profile`,
           );

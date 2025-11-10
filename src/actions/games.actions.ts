@@ -2,7 +2,7 @@
 
 import { createSafeActionClient } from "next-safe-action";
 import { z } from "zod";
-import type { Database, Game, GameWithSkus } from "@/lib/supabase-types";
+import type { GameWithSkus } from "@/lib/supabase-types";
 import { createSupabaseServerClient } from "@/lib/supabaseServer";
 
 // Create the action client
@@ -68,11 +68,24 @@ export async function getGames(
       return getMockGamesResult(limit, offset);
     }
 
+    // Sort games: games with SKUs first, then games without SKUs
+    const sortedGames = (data as GameWithSkus[]).sort((a, b) => {
+      // Games with SKUs come first
+      const aHasSkus = a.skus && a.skus.length > 0;
+      const bHasSkus = b.skus && b.skus.length > 0;
+
+      if (aHasSkus && !bHasSkus) return -1;
+      if (!aHasSkus && bHasSkus) return 1;
+
+      // If both have SKUs or both don't have SKUs, maintain creation date order
+      return 0;
+    });
+
     return {
       success: true,
       message: "Games fetched successfully",
       data: {
-        games: data as GameWithSkus[],
+        games: sortedGames,
         total: count || 0,
         hasMore: (count || 0) > offset + limit,
       },
@@ -93,7 +106,8 @@ export const getGameById = actionClient
 
       const { data, error } = await supabase
         .from("games")
-        .select(`
+        .select(
+          `
           *,
           profiles!games_merchant_id_fkey (
             merchant_name
@@ -105,51 +119,38 @@ export const getGameById = actionClient
             prices,
             image_url
           )
-        `)
-        .eq("id", parsedInput.gameId)
-        .single();
+        `,
+        )
+        .eq("id", parsedInput.gameId);
 
       if (error) {
         console.error("Get game by ID error:", error);
-        // Return mock data if database fails
+        return { success: false, message: "Database query failed." };
+      }
+
+      if (!data || data.length === 0) {
+        // Try falling back to mock data if no real data is found
         const mockGame = getMockGames().find(
           (game) => game.id === parsedInput.gameId,
         );
-        if (!mockGame) {
+        if (mockGame) {
           return {
-            success: false,
-            message: "Game not found",
+            success: true,
+            message: "Mock game fetched successfully",
+            data: mockGame,
           };
         }
-        return {
-          success: true,
-          message: "Mock game fetched successfully",
-          data: mockGame,
-        };
+        return { success: false, message: "Game not found" };
       }
 
       return {
         success: true,
         message: "Game fetched successfully",
-        data: data as GameWithSkus,
+        data: data[0] as GameWithSkus,
       };
     } catch (error) {
       console.error("Unexpected get game by ID error:", error);
-      // Return mock data if database fails
-      const mockGame = getMockGames().find(
-        (game) => game.id === parsedInput.gameId,
-      );
-      if (!mockGame) {
-        return {
-          success: false,
-          message: "Game not found",
-        };
-      }
-      return {
-        success: true,
-        message: "Mock game fetched successfully",
-        data: mockGame,
-      };
+      return { success: false, message: "An unexpected error occurred." };
     }
   });
 
@@ -163,7 +164,8 @@ export const searchGames = actionClient
 
       let queryBuilder = supabase
         .from("games")
-        .select(`
+        .select(
+          `
           *,
           profiles!games_merchant_id_fkey (
             merchant_name
@@ -174,12 +176,13 @@ export const searchGames = actionClient
             prices,
             image_url
           )
-        `)
+        `,
+        )
         .range(offset, offset + limit - 1)
         .order("created_at", { ascending: false });
 
       // Add search filter if query is provided
-      if (query && query.trim()) {
+      if (query?.trim()) {
         queryBuilder = queryBuilder.or(`
           name->>en.ilike.%${query}%,
           name->>zh.ilike.%${query}%,
@@ -228,7 +231,8 @@ export async function getFeaturedGames(
     // In a real app, you might have a "featured" flag or ordering by popularity
     const { data, error } = await supabase
       .from("games")
-      .select(`
+      .select(
+        `
         *,
         profiles!games_merchant_id_fkey (
           merchant_name
@@ -239,7 +243,8 @@ export async function getFeaturedGames(
           prices,
           image_url
         )
-      `)
+      `,
+      )
       .not("skus", "is", null)
       .order("created_at", { ascending: false })
       .limit(limit);
@@ -299,15 +304,26 @@ function getMockGamesResult(
   offset: number = 0,
 ): GamesResult {
   const mockGames = getMockGames();
-  const paginatedGames = mockGames.slice(offset, offset + limit);
+
+  // Sort mock games: games with SKUs first, then games without SKUs
+  const sortedMockGames = mockGames.sort((a, b) => {
+    const aHasSkus = a.skus && a.skus.length > 0;
+    const bHasSkus = b.skus && b.skus.length > 0;
+
+    if (aHasSkus && !bHasSkus) return -1;
+    if (!aHasSkus && bHasSkus) return 1;
+    return 0;
+  });
+
+  const paginatedGames = sortedMockGames.slice(offset, offset + limit);
 
   return {
     success: true,
     message: "Mock games fetched successfully",
     data: {
       games: paginatedGames,
-      total: mockGames.length,
-      hasMore: mockGames.length > offset + limit,
+      total: sortedMockGames.length,
+      hasMore: sortedMockGames.length > offset + limit,
     },
   };
 }
@@ -450,7 +466,8 @@ export async function getGameByIdServer(gameId: string): Promise<GamesResult> {
 
     const { data, error } = await supabase
       .from("games")
-      .select(`
+      .select(
+        `
         *,
         profiles!games_merchant_id_fkey (
           merchant_name
@@ -462,46 +479,35 @@ export async function getGameByIdServer(gameId: string): Promise<GamesResult> {
           prices,
           image_url
         )
-      `)
-      .eq("id", gameId)
-      .single();
+      `,
+      )
+      .eq("id", gameId);
 
     if (error) {
       console.error("Get game by ID error:", error);
-      // Return mock data if database fails
+      return { success: false, message: "Database query failed." };
+    }
+
+    if (!data || data.length === 0) {
+      // Try falling back to mock data if no real data is found
       const mockGame = getMockGames().find((game) => game.id === gameId);
-      if (!mockGame) {
+      if (mockGame) {
         return {
-          success: false,
-          message: "Game not found",
+          success: true,
+          message: "Mock game fetched successfully",
+          data: mockGame,
         };
       }
-      return {
-        success: true,
-        message: "Mock game fetched successfully",
-        data: mockGame,
-      };
+      return { success: false, message: "Game not found" };
     }
 
     return {
       success: true,
       message: "Game fetched successfully",
-      data: data as GameWithSkus,
+      data: data[0] as GameWithSkus,
     };
   } catch (error) {
     console.error("Unexpected get game by ID error:", error);
-    // Return mock data if database fails
-    const mockGame = getMockGames().find((game) => game.id === gameId);
-    if (!mockGame) {
-      return {
-        success: false,
-        message: "Game not found",
-      };
-    }
-    return {
-      success: true,
-      message: "Mock game fetched successfully",
-      data: mockGame,
-    };
+    return { success: false, message: "An unexpected error occurred." };
   }
 }

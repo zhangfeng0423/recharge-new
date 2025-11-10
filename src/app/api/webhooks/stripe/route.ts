@@ -34,7 +34,7 @@ function logWebhookEvent(
   data?: any,
 ) {
   const timestamp = new Date().toISOString();
-  const logEntry = {
+  const _logEntry = {
     timestamp,
     level,
     message,
@@ -51,7 +51,7 @@ function logWebhookEvent(
 async function updateOrderStatus(
   orderId: string,
   status: Database["public"]["Enums"]["orders_status"],
-  metadata?: Record<string, any>,
+  _metadata?: Record<string, any>,
 ): Promise<{ success: boolean; error?: string }> {
   try {
     const supabase = createSupabaseAdminClient();

@@ -1,8 +1,8 @@
-import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
+import { SupabaseDebugger } from "@/components/debug/supabase-debugger";
 import { routing } from "@/i18n/routing";
 import "../globals.css";
 
@@ -15,11 +15,6 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
-
-export const metadata: Metadata = {
-  title: "Game Recharge Platform",
-  description: "Multi-tenant game recharge platform",
-};
 
 type Props = {
   children: React.ReactNode;
@@ -45,6 +40,7 @@ export default async function LocaleLayout({ children, params }: Props) {
         <NextIntlClientProvider messages={messages}>
           {children}
         </NextIntlClientProvider>
+        {process.env.NODE_ENV === "development" && <SupabaseDebugger />}
       </body>
     </html>
   );

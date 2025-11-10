@@ -1,223 +1,40 @@
-"use client";
-
-import Image from "next/image";
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { useTranslations } from "next-intl";
-import { use, useEffect, useState } from "react";
-import { getGameById as getGameByIdAction } from "@/actions/games.actions";
-import { SkuDetailModal } from "@/components/features/sku-detail-modal";
-import { Button } from "@/components/ui/Button";
-import type { GameWithSkus, Sku } from "@/lib/supabase-types";
-import { useSkuModalStore } from "@/stores/useSkuModalStore";
+import { getTranslations } from "next-intl/server";
+import { getGameByIdServer } from "@/actions/games.actions";
+import { GameDetailClient } from "@/components/features/game-detail-client";
+import type { GameWithSkus } from "@/lib/supabase-types";
 
 interface GameDetailPageProps {
-  params: Promise<{
+  params: {
     locale: string;
     gameId: string;
-  }>;
+  };
 }
 
-export default function GameDetailPage({ params }: GameDetailPageProps) {
-  const { locale, gameId } = use(params);
-  const t = useTranslations("common"); // Specify common namespace
-  const { openModal } = useSkuModalStore();
+export default async function GameDetailPage({ params }: GameDetailPageProps) {
+  const { locale, gameId } = await params;
 
-  const [game, setGame] = useState<GameWithSkus | null>(null);
-  const [loading, setLoading] = useState(true);
+  const gameResult = await getGameByIdServer(gameId);
 
-  useEffect(() => {
-    const fetchGame = async () => {
-      setLoading(true);
-      try {
-        console.log("Fetching game with ID:", gameId);
-        const gameResult = await getGameByIdAction({ gameId });
-        console.log("Game result:", gameResult);
-
-        if (!gameResult.data?.success || !gameResult.data.data) {
-          console.log("Game not found in database, showing 404");
-          notFound();
-        }
-        setGame(gameResult.data.data as GameWithSkus);
-      } catch (error) {
-        console.error("Error fetching game:", error);
-        notFound();
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchGame();
-  }, [gameId]);
-
-  const handleViewDetails = (sku: Sku) => {
-    openModal(sku);
-  };
-
-  if (loading || !game) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        {t("loading")}...
-      </div>
-    );
+  if (!gameResult.success || !gameResult.data) {
+    notFound();
   }
 
-  const gameName = game.name[locale as keyof typeof game.name] || game.name.en;
-  const gameDescription =
-    game.description?.[locale as keyof typeof game.description] ||
-    game.description?.en ||
-    "";
+  const game = gameResult.data as GameWithSkus;
+
+  // Get translations for SkuCard components
+  const tGames = await getTranslations("games");
+  
+  const skuCardTranslations = {
+    popular: tGames("popular"),
+    rechargeButton: tGames("rechargeButton"),
+  };
 
   return (
-    <>
-      <SkuDetailModal />
-      <div className="min-h-screen bg-gray-50">
-        {/* Navigation Header */}
-        <header className="border-b border-gray-200 bg-white">
-          <div className="container mx-auto px-4">
-            <div className="flex items-center justify-between h-16">
-              {/* Back Button + Game Title */}
-              <div className="flex items-center space-x-4">
-                <Link
-                  href={`/${locale}`}
-                  className="text-gray-600 hover:text-gray-900 flex items-center space-x-1"
-                >
-                  <span>←</span>
-                  <span>{t("back")}</span>
-                </Link>
-                <h1 className="text-xl font-semibold text-gray-900">
-                  {gameName}
-                </h1>
-              </div>
-
-              {/* Right side controls */}
-              <div className="flex items-center space-x-6">
-                {/* Language Toggle */}
-                <div className="flex items-center space-x-2 text-sm">
-                  <Link
-                    href={`/en/games/${gameId}`}
-                    className={`px-2 py-1 rounded ${
-                      locale === "en"
-                        ? "bg-blue-100 text-blue-700"
-                        : "text-gray-600 hover:text-gray-900"
-                    }`}
-                  >
-                    EN
-                  </Link>
-                  <span className="text-gray-400">/</span>
-                  <Link
-                    href={`/zh/games/${gameId}`}
-                    className={`px-2 py-1 rounded ${
-                      locale === "zh"
-                        ? "bg-blue-100 text-blue-700"
-                        : "text-gray-600 hover:text-gray-900"
-                    }`}
-                  >
-                    ZH
-                  </Link>
-                </div>
-
-                {/* User */}
-                {/* Removed hardcoded "Alex", user name should be dynamic */}
-                <div className="text-sm text-blue-600 font-medium"></div>
-              </div>
-            </div>
-          </div>
-        </header>
-
-        <div className="container mx-auto px-4 py-8">
-          {/* Large Game Banner */}
-          <div className="mb-8">
-            <div className="relative aspect-[16/9] w-full bg-gray-100 rounded-lg overflow-hidden">
-              {game.banner_url ? (
-                <Image
-                  src={game.banner_url}
-                  alt={gameName}
-                  fill
-                  className="object-cover"
-                  priority
-                  sizes="100vw"
-                />
-              ) : (
-                <div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-                  <span className="text-white text-6xl font-bold">
-                    {gameName.charAt(0)}
-                  </span>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Game Description */}
-          {gameDescription && (
-            <div className="mb-8">
-              <p className="text-lg text-gray-700 max-w-4xl">
-                {gameDescription}
-              </p>
-              <div className="max-w-4xl h-px bg-gray-300 mt-4"></div>
-            </div>
-          )}
-
-          {/* SKU Selection Section */}
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-8">
-              {t("selectYourItem")}
-            </h2>
-
-            {/* SKU Cards Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl">
-              {game.skus?.map((sku) => {
-                const skuName =
-                  sku.name[locale as keyof typeof sku.name] || sku.name.en;
-                const priceInCents = sku.prices?.usd || 0;
-
-                return (
-                  <div
-                    key={sku.id}
-                    className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow duration-200 flex flex-col"
-                  >
-                    {/* SKU Image */}
-                    <div className="relative aspect-square bg-gray-100">
-                      {sku.image_url ? (
-                        <Image
-                          src={sku.image_url}
-                          alt={skuName}
-                          fill
-                          className="object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-green-500 to-blue-600 flex items-center justify-center">
-                          <span className="text-white text-4xl font-bold">
-                            💎
-                          </span>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* SKU Info */}
-                    <div className="p-6 text-center flex flex-col flex-grow">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                        {skuName}
-                      </h3>
-                      <p className="text-xl font-bold text-blue-600 mb-4">
-                        ${(priceInCents / 100).toFixed(2)} USD
-                      </p>
-                      <div className="mt-auto">
-                        <Button
-                          className="w-full"
-                          onClick={() => handleViewDetails(sku)}
-                        >
-                          {t("viewDetailsButton")}
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
+    <GameDetailClient
+      game={game}
+      locale={locale}
+      skuCardTranslations={skuCardTranslations}
+    />
   );
 }

@@ -239,6 +239,15 @@ export interface PaginatedResponse<T> {
   page_size: number;
 }
 
+// Helper type for JSONB columns
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[];
+
 // =============================================================================
 // DATABASE TYPE EXPORTS FOR SUPABASE CLIENT
 // =============================================================================
@@ -299,6 +308,53 @@ export type Database = {
         };
         Returns: {
           game_id: string;
+        }[];
+      };
+      get_merchant_analytics: {
+        Args: {
+          p_merchant_id: string;
+          p_start_date?: string | null;
+          p_end_date?: string | null;
+          p_timezone?: string;
+        };
+        Returns: {
+          total_revenue: number;
+          total_orders: number;
+          completed_orders: number;
+          pending_orders: number;
+          failed_orders: number;
+          unique_customers: number;
+          average_order_value: number;
+          conversion_rate: number;
+          today_revenue: number;
+          today_orders: number;
+          yesterday_revenue: number;
+          yesterday_orders: number;
+          this_month_revenue: number;
+          this_month_orders: number;
+          last_month_revenue: number;
+          last_month_orders: number;
+          top_skus: Json;
+          daily_sales: Json;
+          revenue_by_game: Json;
+          order_status_breakdown: Json;
+          hourly_sales: Json;
+          recent_orders: Json;
+        }[];
+      };
+      get_merchant_orders_overview: {
+        Args: {
+          p_merchant_id: string;
+          p_start_date?: string | null;
+          p_end_date?: string | null;
+          p_status?: string | null;
+          p_limit?: number;
+          p_offset?: number;
+        };
+        Returns: {
+          orders: Json;
+          total_count: number;
+          summary: Json;
         }[];
       };
     };

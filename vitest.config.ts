@@ -6,9 +6,10 @@ export default defineConfig({
   plugins: [react()],
   test: {
     globals: true,
-    environment: "node", // Use node environment for RLS testing
+    environment: "jsdom", // Use jsdom for component testing
     setupFiles: ["./vitest.setup.ts", "./tests/setup.ts"],
     include: ["tests/**/*.test.ts", "tests/**/*.test.tsx"],
+    exclude: ["node_modules/**", "dist/**", "coverage/**"],
   },
   resolve: {
     alias: {

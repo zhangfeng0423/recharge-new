@@ -1,7 +1,8 @@
 "use client";
 
 import { Loader2 } from "lucide-react";
-import React, { useState, useTransition } from "react";
+import { useState, useTransition } from "react";
+import { useTranslations } from "next-intl";
 import { signInWithGoogle } from "@/actions/auth.actions";
 import { Button } from "@/components/ui/Button";
 
@@ -20,6 +21,7 @@ export function GoogleButton({
   onSuccess,
   onError,
 }: GoogleButtonProps) {
+  const t = useTranslations("auth");
   const [isPending, startTransition] = useTransition();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -30,14 +32,14 @@ export function GoogleButton({
       try {
         const result = await signInWithGoogle();
 
-        if (result.success && result.redirectUrl) {
+        if (!result.serverError && result.data?.redirectUrl) {
           // Redirect to the URL from Supabase
-          window.location.href = result.redirectUrl;
+          window.location.href = result.data.redirectUrl;
           onSuccess?.();
         } else {
-          onError?.(result.message || "Google sign in failed");
+          onError?.(result.serverError?.message || "Google sign in failed");
         }
-      } catch (error) {
+      } catch (_error) {
         onError?.("An unexpected error occurred");
       } finally {
         setIsLoading(false);
@@ -83,8 +85,8 @@ export function GoogleButton({
         </svg>
         <span>
           {isPending || isLoading
-            ? "Connecting to Google..."
-            : "Continue with Google"}
+            ? t("connectingToGoogle")
+            : t("continueWithGoogle")}
         </span>
       </div>
     </Button>

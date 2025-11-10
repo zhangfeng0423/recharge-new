@@ -15,6 +15,7 @@ import {
 import { GoogleButton } from "@/components/ui/GoogleButton";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
+import { createSupabaseBrowserClient } from "@/lib/supabaseClient";
 
 export default function AuthPage() {
   const t = useTranslations();
@@ -94,7 +95,7 @@ export default function AuthPage() {
       // Google auth redirects are handled server-side
       // This state is just for showing success messages
     }
-  }, [googleAuthState.success, router]);
+  }, [googleAuthState.success]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -117,6 +118,7 @@ export default function AuthPage() {
     setLoginState((prev) => ({ ...prev, pending: true, message: "" }));
 
     try {
+      // Use server action for login to ensure proper session handling
       const response = await fetch("/api/auth/login", {
         method: "POST",
         headers: {
@@ -130,10 +132,10 @@ export default function AuthPage() {
 
       const result = await response.json();
 
-      if (response.ok) {
+      if (response.ok && result.success) {
         setLoginState({
           success: true,
-          message: result.message,
+          message: result.message || "Login successful",
           pending: false,
         });
       } else {
@@ -143,10 +145,10 @@ export default function AuthPage() {
           pending: false,
         });
       }
-    } catch (error) {
+    } catch (_error) {
       setLoginState({
         success: false,
-        message: t("common.error"), // Using common error translation
+        message: t("common.error"),
         pending: false,
       });
     }
@@ -186,7 +188,7 @@ export default function AuthPage() {
           pending: false,
         });
       }
-    } catch (error) {
+    } catch (_error) {
       setRegisterState({
         success: false,
         message: t("common.error"), // Using common error translation

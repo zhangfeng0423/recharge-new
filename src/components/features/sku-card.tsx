@@ -1,5 +1,3 @@
-"use client";
-
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
@@ -10,11 +8,19 @@ interface SkuCardProps {
   sku: Sku;
   locale: string;
   onViewDetails: (sku: Sku) => void;
+  translations: {
+    popular: string;
+    rechargeButton: string;
+  };
 }
 
-export function SkuCard({ sku, locale, onViewDetails }: SkuCardProps) {
-  const t = useTranslations("games");
-
+export function SkuCard({
+  sku,
+  locale,
+  onViewDetails,
+  translations,
+}: SkuCardProps) {
+  const tCommon = useTranslations("common");
   // Get the localized SKU name and description
   const skuName = sku.name[locale as keyof typeof sku.name] || sku.name.en;
   const skuDescription = sku.description
@@ -39,7 +45,7 @@ export function SkuCard({ sku, locale, onViewDetails }: SkuCardProps) {
             <div className="text-center">
               <div className="mb-2 text-4xl">💎</div>
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                No Image
+                {tCommon("noImage")}
               </p>
             </div>
           </div>
@@ -48,7 +54,7 @@ export function SkuCard({ sku, locale, onViewDetails }: SkuCardProps) {
         {/* Badge for popular items (you could add this logic later) */}
         {sku.prices.usd < 1000 && (
           <div className="absolute top-2 right-2 rounded-full bg-green-500 px-2 py-1 text-xs font-medium text-white">
-            Popular
+            {translations.popular}
           </div>
         )}
       </div>
@@ -73,9 +79,13 @@ export function SkuCard({ sku, locale, onViewDetails }: SkuCardProps) {
           </p>
         </div>
 
-        {/* Action Button */}
-        <Button className="w-full" onClick={() => onViewDetails(sku)}>
-          {t("recharge")}
+        {/* Action Button - Following PRD prototype: "View Details" */}
+        <Button
+          className="w-full"
+          onClick={() => onViewDetails(sku)}
+          variant="outline"
+        >
+          {tCommon("viewDetails")}
         </Button>
       </div>
     </div>

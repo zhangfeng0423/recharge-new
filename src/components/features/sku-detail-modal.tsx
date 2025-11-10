@@ -3,7 +3,7 @@
 import { X } from "lucide-react"; // Using lucide-react for icons, common in shadcn/ui
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
-import React, { useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 import { createCheckoutSession } from "@/actions/payment.actions";
 import { Button } from "@/components/ui/Button";
 import { formatPrice } from "@/lib/utils";
@@ -11,6 +11,7 @@ import { useSkuModalStore } from "@/stores/useSkuModalStore";
 
 export function SkuDetailModal() {
   const t = useTranslations("purchase");
+  const tCommon = useTranslations("common");
   const locale = useLocale();
   const { isOpen, sku, closeModal } = useSkuModalStore();
   const [isPending, startTransition] = useTransition();
@@ -31,11 +32,11 @@ export function SkuDetailModal() {
           // Redirect to Stripe Checkout
           window.location.href = result.data.checkoutUrl;
         } else {
-          setError(result.data?.message || "Failed to create checkout session");
+          setError(result.data?.message || tCommon("checkoutSessionError"));
         }
       } catch (error) {
         console.error("Checkout error:", error);
-        setError("An error occurred while processing your purchase");
+        setError(tCommon("purchaseError"));
       }
     });
   };
@@ -66,51 +67,65 @@ export function SkuDetailModal() {
           <X size={24} />
         </button>
 
-        {/* SKU Image */}
-        <div className="relative mb-4 aspect-[16/9] w-full overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-700">
+        {/* SKU Image - Following PRD prototype */}
+        <div className="relative mb-6 aspect-square w-full overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-700">
           {sku.image_url ? (
             <Image
               src={sku.image_url}
               alt={skuName}
               fill
               className="object-cover"
-              sizes="(max-width: 768px) 90vw, 50vw"
+              sizes="(max-width: 768px) 90vw, 400px"
             />
           ) : (
             <div className="flex h-full items-center justify-center text-center">
               <div>
-                <div className="text-5xl">💎</div>
-                <p className="mt-2 text-sm text-gray-500">No Image</p>
+                <div className="text-6xl">💎</div>
+                <p className="mt-2 text-sm text-gray-500">
+                  {tCommon("noImage")}
+                </p>
               </div>
             </div>
           )}
         </div>
 
+        {/* Bonus Badge - Following PRD prototype */}
+        <div className="mb-4 bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-3 py-1 rounded-full text-sm font-bold text-center">
+          3x In-Game Bonus!
+        </div>
+
         {/* SKU Details */}
-        <h3 className="mb-2 text-2xl font-bold leading-6 text-gray-900 dark:text-white">
+        <h3 className="mb-4 text-2xl font-bold text-center text-gray-900 dark:text-white">
           {skuName}
         </h3>
-        <p className="mb-4 text-sm text-gray-500 dark:text-gray-400">
-          {skuDescription}
-        </p>
 
-        {/* Price */}
-        <div className="my-6">
-          <p className="text-sm text-gray-500 dark:text-gray-300">
-            {t("price")}
+        {/* Item Breakdown - Following PRD prototype */}
+        <div className="mb-6 text-center space-y-2">
+          <p className="text-gray-700 dark:text-gray-300">
+            <span className="font-semibold">32</span> Base Crystals
           </p>
-          <p className="text-4xl font-extrabold text-green-600 dark:text-green-400">
+          <p className="text-gray-700 dark:text-gray-300">
+            <span className="font-semibold">4</span> Bonus Crystals
+          </p>
+        </div>
+
+        {/* Price - Following PRD prototype */}
+        <div className="mb-6 text-center">
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
+            Price:
+          </p>
+          <p className="text-3xl font-bold text-green-600 dark:text-green-400">
             {formatPrice(sku.prices.usd, "usd", locale)}
           </p>
         </div>
 
-        {/* Purchase Button */}
+        {/* Purchase Button - Following PRD prototype */}
         <Button
-          className="w-full py-3 text-lg font-semibold"
+          className="w-full py-4 text-lg font-semibold"
           onClick={handlePurchase}
           disabled={isPending}
         >
-          {isPending ? t("processing") : t("confirmPurchase")}
+          {isPending ? t("processing") : t("purchase")}
         </Button>
 
         {/* Error Message */}

@@ -1,6 +1,5 @@
 import { XCircle } from "lucide-react";
 import Link from "next/link";
-import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 
 interface PaymentCancelPageProps {
@@ -32,17 +31,16 @@ export default async function PaymentCancelPage({
 
         {/* Cancel Message */}
         <h1 className="mb-4 text-3xl font-bold text-gray-900 dark:text-white">
-          {t("paymentCanceled") || "Payment Canceled"}
+          {t("paymentCanceled")}
         </h1>
         <p className="mb-8 text-lg text-gray-600 dark:text-gray-300">
-          {t("paymentCanceledMessage") ||
-            "Your payment has been canceled. No charges were made."}
+          {t("paymentCanceledMessage")}
         </p>
 
         {/* Session ID */}
         <div className="mb-8 p-4 bg-white rounded-lg border border-gray-200 dark:border-gray-700">
           <p className="text-sm text-gray-500 mb-2">
-            {t("transactionId") || "Transaction ID"}
+            {t("transactionId")}
           </p>
           <p className="font-mono text-sm text-gray-900 dark:text-white">
             {session_id || "N/A"}

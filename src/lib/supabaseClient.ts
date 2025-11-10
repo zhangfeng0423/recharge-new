@@ -16,7 +16,7 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
  * Creates a Supabase client for client-side usage
  * This client respects Row Level Security (RLS) policies
  */
-export function createSupabaseClient(): SupabaseClient<Database> {
+export function createSupabaseBrowserClient(): SupabaseClient<Database> {
   try {
     const client = createClient<Database>(supabaseUrl, supabaseAnonKey, {
       auth: {
@@ -46,16 +46,28 @@ export function createSupabaseClient(): SupabaseClient<Database> {
 let clientInstance: SupabaseClient<Database> | null = null;
 
 /**
- * Get cached client instance
+ * Get cached client instance (true singleton)
  */
-export function getSupabaseClient(): SupabaseClient<Database> {
+export function getSupabaseBrowserClient(): SupabaseClient<Database> {
   if (!clientInstance) {
-    clientInstance = createSupabaseClient();
+    clientInstance = createSupabaseBrowserClient();
+    console.log("🔗 [Supabase] Created singleton browser client instance");
   }
   return clientInstance;
 }
 
 /**
  * Export the singleton as default for easier usage
+ * This ensures all imports use the same instance
  */
-export const supabase = getSupabaseClient();
+export const supabase = getSupabaseBrowserClient();
+
+/**
+ * Reset the singleton instance (for testing only)
+ */
+export function resetSupabaseBrowserClient(): void {
+  if (clientInstance) {
+    console.log("🔄 [Supabase] Resetting singleton browser client instance");
+    clientInstance = null;
+  }
+}

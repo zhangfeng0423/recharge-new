@@ -97,8 +97,11 @@ export const createCheckoutSession = actionClient
     });
 
     try {
-      const supabase: SupabaseClient<Database> = createSupabaseServerClient();
+      // Use the same authentication method as login functionality
       const user = await getCurrentUser();
+
+      // Create supabase client after user authentication check
+      const supabase: SupabaseClient<Database> = createSupabaseServerClient();
 
       // Authentication check
       if (!user) {
