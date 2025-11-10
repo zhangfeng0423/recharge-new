@@ -884,41 +884,39 @@ export const updatePasswordAction = actionClient
 // Google OAuth login action
 export const signInWithGoogle = actionClient.action(
   async (): Promise<AuthResult> => {
+    const startTime = Date.now();
+    const messages = await getLocalizedMessages("en");
+
     try {
-      // Use server-side client for Server Actions
-      const supabase = createSupabaseAdminClient();
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`,
-        },
+      // OAuth需要在客户端进行，不能在Server Action中使用admin client
+      // 返回错误信息，指导用户使用客户端组件
+      const error = ErrorFactory.authenticationError(
+        "Google OAuth must be initiated from client side. Please use the GoogleButton component directly.",
+        {
+          method: "server_action_oauth",
+          suggestion: "Use client-side GoogleButton component instead"
+        }
+      );
+
+      handleError(error as any, {
+        action: "signInWithGoogle",
+        duration: Date.now() - startTime,
+        error: "OAuth initiated from server action",
       });
 
-      if (error) {
-        return {
-          success: false,
-          message: error.message || "Failed to sign in with Google",
-        };
-      }
-
-      if (!data.url) {
-        return {
-          success: false,
-          message: "No redirect URL returned from Google sign in",
-        };
-      }
-
-      // For OAuth, the redirect happens automatically
-      // This action is mainly for initiating the flow
-      return {
-        success: true,
-        message: "Redirecting to Google for authentication...",
-        redirectUrl: data.url,
-      };
-    } catch (error) {
       return {
         success: false,
-        message: "An unexpected error occurred during Google sign in",
+        message: "Please use the Google Sign-In button on the page instead.",
+      };
+    } catch (error) {
+      const enhancedError = handleError(error as any, {
+        action: "signInWithGoogle",
+        duration: Date.now() - startTime,
+      });
+
+      return {
+        success: false,
+        message: enhancedError.getUserMessage("en"),
       };
     }
   },
